@@ -1,0 +1,113 @@
+{
+  "login": {
+    "code": 200,
+    "message": "登录成功",
+    "data": "dasdsa5d45sa4d6as4d5sa4d65a"
+  },
+  "userInfo": {
+    "msg": "操作成功",
+    "code": 200,
+    "permissions": ["*:*:*"],
+    "roles": ["admin"],
+    "user": {
+      "searchValue": null,
+      "createBy": "admin",
+      "createTime": "2018-03-26 00:00:00",
+      "updateBy": null,
+      "updateTime": null,
+      "remark": "管理员",
+      "dataScope": null,
+      "params": {},
+      "userId": 1,
+      "deptId": 103,
+      "userName": "admin",
+      "nickName": "测试",
+      "email": "mo_pengnew@163.com",
+      "phonenumber": "110",
+      "sex": "1",
+      "avatar": "",
+      "password": "$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2",
+      "salt": null,
+      "status": "0",
+      "delFlag": "0",
+      "loginIp": "127.0.0.1",
+      "loginDate": "2018-03-16T11:33:00.000+0800",
+      "dept": {
+        "searchValue": null,
+        "createBy": null,
+        "createTime": null,
+        "updateBy": null,
+        "updateTime": null,
+        "remark": null,
+        "dataScope": null,
+        "params": {},
+        "deptId": 103,
+        "parentId": 101,
+        "ancestors": null,
+        "deptName": "Vue前端",
+        "orderNum": "1",
+        "leader": "测试",
+        "phone": null,
+        "email": null,
+        "status": "0",
+        "delFlag": null,
+        "parentName": null,
+        "children": []
+      },
+      "roles": [
+        {
+          "searchValue": null,
+          "createBy": null,
+          "createTime": null,
+          "updateBy": null,
+          "updateTime": null,
+          "remark": null,
+          "dataScope": "1",
+          "params": {},
+          "roleId": 1,
+          "roleName": "管理员",
+          "roleKey": "admin",
+          "roleSort": "1",
+          "status": "0",
+          "delFlag": null,
+          "flag": false,
+          "menuIds": null,
+          "deptIds": null,
+          "admin": true
+        }
+      ],
+      "roleIds": null,
+      "postIds": null,
+      "admin": true
+    }
+  },
+  "userList": {
+    "code": 200,
+    "data": [
+      {
+        "id": 1,
+        "name": "momo",
+        "phone": "18721551111",
+        "email": "33243@qq.com",
+        "role": "管理员",
+        "time": "20220308 11:11:11",
+        "status": "1"
+      }
+    ]
+  },
+  "updateUserInfo": {
+      "code": 200
+  },
+  "updateUserStatus": {
+      "code": 200
+  },
+  "delUser": {
+      "code": 200
+  },
+  "batchDelUser": {
+      "code": 200
+  },
+  "addUser": {
+      "code": 200
+  }
+}
