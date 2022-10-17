@@ -93,6 +93,20 @@ export default new Router({
                     component: () => import( '../views/pages/userInfo/TrainInfo'),
                     meta: { title: '购买信息' },
                     parmas: {}
+                },
+                {
+                    name: '3',
+                    path: '/3',
+                    component: () => import( '../views/pages/manager/3'),
+                    meta: { title: '3' },
+                    parmas: {}
+                },
+                {
+                    name: '4',
+                    path: '/4',
+                    component: () => import( '../views/pages/manager/4'),
+                    meta: { title: '4' },
+                    parmas: {}
                 }
                 // {
                 //     path: '/FileManager',

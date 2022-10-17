@@ -128,78 +128,76 @@
                  :visible.sync="doctorInfoDialog"
                  @close="cancel('doctorForm')">
         <el-form ref="doctorForm"
+                :inline="true"
                  :model="doctorForm"
                  :rules="rules"
-                 label-width="80px"
-                 style="margin-right: 50px;">
-          <el-form-item label="医生"
+                 label-width="120px"
+                 class="form"
+                 >
+          <el-form-item label="类型"
+                        prop="name">
+                <el-select style="width:200px" v-model="doctorForm.type" placeholder="请选择">
+                  <el-option v-for="item in typeList"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                  </el-option>
+                </el-select>
+          </el-form-item>
+          <el-form-item label="视训师识别码"
                         prop="name">
             <el-input type="text"
                       placeholder="请输入医生名"
-                      v-model="doctorForm.name"
-                      style="width=250px"></el-input>
+                      v-model="doctorForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="医生编码"
+          <el-form-item label="医生姓名"
+                        prop="name">
+            <el-input type="text"
+                      placeholder="请输入医生名"
+                      v-model="doctorForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="视训师编码"
                         prop="code">
             <el-input type="text"
-                      placeholder="请输入医生编码"
-                      v-model="doctorForm.code"
-                      style="width=250px"></el-input>
+                      placeholder="请输入视训师编码"
+                      v-model="doctorForm.code"></el-input>
           </el-form-item>
-          <el-form-item label="所属医院"
-                        prop="hospitalId">
-            <el-select v-model="doctorForm.hospitalId"
-                       placeholder="请选择">
-              <el-option v-for="item in hospitalList"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="医生类型"
-                        prop="type">
-            <el-select v-model="doctorForm.type"
-                       placeholder="请选择">
-              <el-option v-for="item in typeList"
-                         :key="item"
-                         :label="item"
-                         :value="item">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="电话"
-                        prop="phone">
-            <el-input type="text"
+          <el-form-item label="手机号"
+                        prop="code">
+                        <el-input type="text"
                       placeholder="请输入电话号码"
                       v-model="doctorForm.phone"></el-input>
           </el-form-item>
-          <el-form-item label="医生状态"
-                        prop="status">
-            <el-switch style="display: block"
-                       v-model="doctorForm.status"
-                       active-color="#13ce66"
-                       inactive-color="#ff4949"
-                       active-text="启用"
-                       inactive-text="禁用"
-                       :active-value="1"
-                       :inactive-value="0">
-            </el-switch>
+          <el-form-item label="年龄"
+                        prop="code">
+            <el-input type="text"
+                      placeholder="请输入视训师编码"
+                      v-model="doctorForm.code"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-upload class="upload-demo"
-                       :action="url"
-                       :on-change="handleChange"
-                       :file-list="fileList"
-                       :headers="myHeaders"
-                       :multiple="false"
-                       name='multipartFile'
-                       :on-success="handleAvatarSuccess">
-              <el-button size="small"
-                         type="primary">点击上传</el-button>
-              <!-- <div slot="tip"
-                   class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-            </el-upload>
+          <el-form-item label="地址"
+                        prop="code">
+                        <el-input type="text"
+                      placeholder="请输入电话号码"
+                      v-model="doctorForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="学历"
+                        prop="code">
+                        <el-input type="text"
+                      placeholder="请输入电话号码"
+                      v-model="doctorForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="建档时间"
+                        prop="code">
+                        <el-date-picker v-model="queryForm.usefulLife"
+                          type="date"
+                          placeholder="选择日期" style="width:200px">
+                        </el-date-picker>
+          </el-form-item>
+          <el-form-item label="身份证号"
+                        prop="code">
+                        <el-input type="text"
+                      placeholder="请输入电话号码"
+                      v-model="doctorForm.phone"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer"
@@ -469,3 +467,8 @@ export default {
   mounted() {},
 }
 </script>
+<style scoped>
+.form{
+  margin: 0 100px;
+}
+</style>
