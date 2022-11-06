@@ -165,7 +165,10 @@ class ApiService {
                 //购买管理
                 buyTimes: function (params) {
                     return request.post1(API.MANAGER.buyTimes, params);
-                }
+                },
+                getByOrderId: function (params) {
+                    return request.get(API.MANAGER.getByOrderId, params)
+                },
             }
     }
 }

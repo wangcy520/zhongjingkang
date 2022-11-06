@@ -14,13 +14,8 @@
         </el-form-item>
         <el-form-item prop="leaseTime"
                       label="下单时间">
-          <el-select v-model="queryForm.leaseTime" size="mini">
-            <el-option v-for="item in leaseTimeList"
-                       :key="item.code"
-                       :label="item.name"
-                       :value="item.code">
-            </el-option>
-          </el-select>
+          <el-date-picker v-model="date" type="date" value-format="yyyy-MM-dd">
+          </el-date-picker>
         </el-form-item>
         <el-button @click="getTableData()"
                    icon="el-icon-search"
@@ -33,35 +28,39 @@
                 ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column prop="code"
+        <el-table-column prop="orderCode"
                          label="订单号/(总疗程)">
         </el-table-column>
-        <el-table-column prop="businessMode"
+        <el-table-column prop="patient.name"
                          label="用户名">
           <template slot-scope="scope">{{scope.row.businessMode == '1' ? '租赁' : '购买'}}</template>
         </el-table-column>
-        <el-table-column prop="days"
+        <el-table-column prop="patient.type"
                          label="用户类型">
         </el-table-column>
-        <el-table-column prop="count"
+        <el-table-column prop=""
                          label="疗程周期">
+          <template slot-scope="scope">{{scope.row.treatmentDays ? scope.row.treatmentDays : scope.row.treatmentCount}}</template>
         </el-table-column>
-        <el-table-column prop="usefulLife"
+        <el-table-column prop="residueDays"
                          label="月卡剩余数量(天)">
+                         <template slot-scope="scope">{{scope.row.residueDays == null ? '0' : scope.row.residueDays}}</template>
         </el-table-column>
-        <el-table-column prop="status"
+        <el-table-column prop="residueCount"
                          label="次卡剩余数量(次)">
-          <template slot-scope="scope">{{scope.row.status == '1' ? '正常运行' : '设备故障'}}</template>
+                         <template slot-scope="scope">{{scope.row.residueCount == null ? '0' : scope.row.residueCount}}</template>
         </el-table-column>
-        <el-table-column prop="usefulLife"
+        <el-table-column prop="currentNum"
                          label="单疗程阶段">
+            <template slot-scope="scope">{{scope.row.currentNum == null ? '0' : scope.row.currentNum}}/{{scope.row.treatmentDays ? scope.row.treatmentDays : scope.row.treatmentCount}}</template>
         </el-table-column>
-        <el-table-column prop="usefulLife"
+        <el-table-column prop="orderTime"
                          label="下单时间(订单号)">
         </el-table-column>
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="isStatus(scope.row)">启用</el-button>
+            <!-- <el-button type="text" size="small" @click="isStatus(scope.row)">启用</el-button> -->
+            <el-button @click="toTreatment(scope.row)" size="small">疗程</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,12 +82,15 @@ import ApiServer from '@/api/apiServer'
 export default {
   data() {
     return {
+      doctorId:'',
       queryForm: {
         pageParams: {
           pageNum: 1,
           pageSize: 10,
         },
+        doctorId:this.$route.query.doctorId
       },
+      date:'',
       tableTotals: 1,
       tableData: [],
       loading: false,
@@ -150,8 +152,20 @@ export default {
         }
       })
     },
+    toTreatment(row){
+      let query = {
+        orderId:row.id,
+        orderCode:row.orderCode,
+        item:row
+      }
+      this.$router.push({
+        name:'4',
+        query:query
+      })
+    }
   },
   mounted() {
+    // this.doctorId = this.$route.query.doctorId
     this.getTableData()
   },
 }

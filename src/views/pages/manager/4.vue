@@ -2,44 +2,64 @@
   <div>
     <el-card>
       <el-row>
-        <el-col :span="2"><div class="grid-content">用户名：A11</div></el-col>
-        <el-col :span="2"><div class="grid-content">疗程总数：1</div></el-col>
-        <el-col :span="2"><div class="grid-content">本次疗程：1/30</div></el-col>
-        <el-col :span="2"><div class="grid-content">频次2</div></el-col>
-        <el-col :span="2"><div class="grid-content">疗程周期</div></el-col>
-        <el-col :span="2"><div class="grid-content">疗程周期合计</div></el-col>
-        <el-col :span="2"><div class="grid-content">训练清单</div></el-col>
-        <el-col :span="2"><div class="grid-content">训练时间</div></el-col>
-        <el-col :span="2"><div class="grid-content">购买编号</div></el-col>
-        <el-col :span="2"><div class="grid-content">定制时间</div></el-col>
+        <el-col :span="2">
+          <div class="grid-content">用户名:{{item.patient ? item.patient.name : ''}}</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">疗程总数:{{item.treatmentType==0 ? item.treatmentCount : item.treatmentDays}}</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">本次疗程:{{item.currentNum}}/{{item.treatmentType==0 ? item.treatmentCount: item.treatmentDays}}</div>
+        </el-col>
+        <el-col :span="2">
+            <div class="grid-content" v-if="item.treatmentType == 0">频次:{{item.usageCount}} / {{item.usageType==0 ? '天' : '周'}}</div>
+            <div class="grid-content" v-else>频次:{{Math.floor(item.treatmentCount==null ? 0 : item.treatmentCount / item.treatmentDays==null ? 0 : item.treatmentDays )}}天</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">疗程周期: {{item.treatmentType  == 0 ? item.treatmentCount : item.treatmentDays}}</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">疗程周期合计:{{item.treatmentCount || 0}}次</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">训练清单:{{tableData.length}}个</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">训练时间:{{count}}分钟</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="grid-content">购买编号</div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content">定制时间:{{item.orderTime}}</div>
+        </el-col>
       </el-row>
-      <el-table :data="tableData"
-                v-loading="loading"
-                ref="multipleTable">
+      <el-table :data="tableData" v-loading="loading" ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column prop="code"
-                         label="项目">
+        <el-table-column prop="name" label="项目">
         </el-table-column>
-        <el-table-column prop="businessMode"
-                         label="训练时间">
-          <template slot-scope="scope">{{scope.row.businessMode == '1' ? '租赁' : '购买'}}</template>
+        <el-table-column prop="optimset" label="训练时间">
+          <template slot-scope="scope">{{ scope.row.optimset.trainingTime }}</template>
         </el-table-column>
-        <el-table-column prop="days"
-                         label="阈值">
+        <el-table-column prop="optimset.threshold" label="阈值">
         </el-table-column>
-        <el-table-column prop="count"
-                         label="用眼模式">
+        <el-table-column prop="optimset.eyes" label="用眼模式">
+          <template slot-scope="scope">{{ scope.row.optimset.eyes == '0' ? '左眼' : scope.row.optimset.eyes == '1' ?
+              '右眼' : '双眼'
+          }}</template>
         </el-table-column>
-        <el-table-column prop="usefulLife"
-                         label="亮度">
+        <el-table-column prop="optimset.brightness" label="亮度">
         </el-table-column>
-        <el-table-column prop="status"
-                         label="色温">
-          <template slot-scope="scope">{{scope.row.status == '1' ? '正常运行' : '设备故障'}}</template>
+        <el-table-column prop="optimset.temperature" label="色温">
+          <template slot-scope="scope">{{ scope.row.optimset.temperature == '0' ? '标准' : 
+          scope.row.optimset.temperature == '1' ? '柔和' :
+          scope.row.optimset.temperature == '2' ? '冷色':'暖色'
+        }}
+          </template>
         </el-table-column>
-        <el-table-column prop="usefulLife"
-                         label="订单号">
+        <el-table-column prop="usefulLife" label="订单号">
+          <template slot-scope="scope">{{ $route.query.orderCode || '' }}</template>
         </el-table-column>
         <!-- <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -47,16 +67,12 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="block">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="queryForm.pageNum"
-                       :page-sizes="[10, 50, 100, 200]"
-                       :page-size="queryForm.pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="tableTotals">
+      <!-- <div class="block">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="queryForm.pageNum" :page-sizes="[10, 50, 100, 200]" :page-size="queryForm.pageSize"
+          layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
         </el-pagination>
-      </div>
+      </div> -->
     </el-card>
   </div>
 </template>
@@ -66,52 +82,17 @@ export default {
   data() {
     return {
       queryForm: {
-        pageParams: {
-          pageNum: 1,
-          pageSize: 10,
-        },
+        orderId: this.$route.query.orderId
       },
       tableTotals: 1,
       tableData: [],
       loading: false,
-      businessModeList: [
-        {
-          name: '租赁',
-          code: '0',
-        },
-        {
-          name: '购买',
-          code: '1',
-        },
-      ],
-      leaseTimeList: [
-        {
-          name: '一年',
-          code: '1',
-        },
-        {
-          name: '二年',
-          code: '2',
-        },
-        {
-          name: '三年',
-          code: '3',
-        },
-      ],
-      statusList: [
-        {
-          name: '正常运行',
-          code: '0',
-        },
-        {
-          name: '设备故障',
-          code: '1',
-        },
-      ],
+      item: {},
+      count:0
     }
   },
   components: {},
-  created() {},
+  created() { },
   methods: {
     handleCurrentChange(val) {
       this.queryForm.pageParams.pageNum = val
@@ -123,17 +104,25 @@ export default {
       this.getTableData()
     },
     getTableData() {
+      let count = 0
       this.loading = true
-      ApiServer.manager.getEquipmentList(this.queryForm).then((res) => {
+      ApiServer.manager.getByOrderId(this.queryForm).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data.list
+          res.data.forEach(e => {
+            e.optimset = JSON.parse(e.optimset)
+            count = count+e.optimset.trainingTime
+          });
+          this.count = count
+          this.tableData = res.data
           this.tableTotals = Number(res.data.total)
         }
       })
     },
   },
   mounted() {
+    this.item = this.$route.query.item
+    console.log(this.item)
     this.getTableData()
   },
 }
@@ -141,10 +130,11 @@ export default {
 
 
 <style scoped>
-.form{
+.form {
   margin: 0 150px;
 }
-.grid-content{
+
+.grid-content {
   color: #333;
   padding-bottom: 20px;
   font-weight: 600;

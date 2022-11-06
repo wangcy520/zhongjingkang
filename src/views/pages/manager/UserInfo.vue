@@ -11,9 +11,9 @@
                     v-model="queryForm.name"></el-input>
         </el-form-item>
         <el-form-item prop="visualCenter"
-                      label="视光中心">
+                      label="次/月卡">
           <el-select v-model="queryForm.visualCenter"
-                     placeholder="请选择视光中心">
+                     placeholder="全部/次卡/月卡">
             <el-option v-for="item in nameList"
                        :key="item.id"
                        :label="item.name"
@@ -21,9 +21,15 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item prop="name"
+                      label="手机号">
+          <el-input type="text"
+                    placeholder="请输入手机号码"
+                    v-model="queryForm.name"></el-input>
+        </el-form-item>
         <el-form-item prop="status"
-                      label="当前状态">
-          <el-select v-model="queryForm.status">
+                      label="患者类型">
+          <el-select v-model="queryForm.status" placeholder="全部/近视/弱视/斜视">
             <el-option v-for="item in statusList"
                        :key="item.code"
                        :label="item.name"
@@ -31,13 +37,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="创建时间"
-                      prop="date">
-          <el-date-picker v-model="queryForm.date"
-                          type="datetime"
-                          placeholder="选择日期时间"
-                          value-format="yyyy-MM-dd HH:mm:ss">
-          </el-date-picker>
+        <el-form-item prop="status"
+                      label="即将到期">
+          <el-select v-model="queryForm.status" placeholder="全部/全部次卡/全部月卡/全部疗程/会员卡">
+            <el-option v-for="item in statusList"
+                       :key="item.code"
+                       :label="item.name"
+                       :value="item.code">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-button @click="addHandle()"
                    icon="el-icon-circle-plus-outline"
@@ -157,18 +165,20 @@
         </el-table-column>
         <el-table-column fixed="right"
                          label="操作"
-                         width="100">
+                         width="200">
           <template slot-scope="scope">
             <!-- <el-button @click="purchaseManagement(scope.row)"
                        type="danger"
                        size="small"
                        icon="el-icon-money">购买管理</el-button> -->
-            <i class="el-icon-edit-outline"
+            <!-- <i class="el-icon-edit-outline"
                :style="{color:'#409eff','font-size':'25px',cursor: 'pointer'}"
-               @click="editHandle(scope.row)"></i>
-            <i class="el-icon-delete"
+               @click="editHandle(scope.row)"></i> -->
+            <!-- <i class="el-icon-delete"
                :style="{color:'red','font-size':'25px',cursor: 'pointer','margin-left': '10px'}"
-               @click="delHandle(scope.row)"></i>
+               @click="delHandle(scope.row)"></i> -->
+               <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button>
+               <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -408,14 +418,15 @@ export default {
       this.getTableData()
     },
     editHandle(row) {
-      this.isAdd = false
-      this.buttonDisabled = false
-      this.userInfoDialog = true
-      row.status = Number(row.status)
-      this.editTitle = '编辑用户'
-      this.$nextTick(() => {
-        this.userInfoForm = JSON.parse(JSON.stringify(row))
-      })
+      // this.isAdd = false
+      // this.buttonDisabled = false
+      // this.userInfoDialog = true
+      // row.status = Number(row.status)
+      // this.editTitle = '编辑用户'
+      // this.$nextTick(() => {
+      //   this.userInfoForm = JSON.parse(JSON.stringify(row))
+      // })
+      this.$router.push({ name: 'userDetails', params: row })
     },
     addHandle() {
       this.isAdd = true
@@ -558,6 +569,23 @@ export default {
         }
       })
     },
+    open() {
+        this.$confirm('确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      }
   },
   mounted() {
     var date = new Date()

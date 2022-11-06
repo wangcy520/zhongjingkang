@@ -56,11 +56,15 @@ const BASE_URL = process.env.API_ROOT,
         getUserInfoList: BASE_URL + 'backend/patient/queryPage',
         saveUser: BASE_URL + 'backend/patient/save',
         //设备管理
-        getEquipmentList: BASE_URL + 'backend/equipment/queryPage',
+        getEquipmentList: BASE_URL + 'backend/order/queryPage',
         addEquipment: BASE_URL + 'backend/equipment/save',
         updateEquipment: BASE_URL + 'backend/equipment/modify',
         //购买管理
-        buyTimes: BASE_URL + 'backend/purchase/buyTimes'
+        buyTimes: BASE_URL + 'backend/purchase/buyTimes',
+        //医生详情管理
+        userInfoDetails:BASE_URL + 'backend/order/queryPage',
+        //疗程列表
+        getByOrderId:BASE_URL + 'backend/app/getByOrderId'
     }
 export default {
     COMMON,

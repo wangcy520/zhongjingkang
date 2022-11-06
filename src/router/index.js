@@ -95,10 +95,17 @@ export default new Router({
                     parmas: {}
                 },
                 {
+                    name: 'userDetails',
+                    path: '/UserDetails',
+                    component: () => import( '../views/pages/manager/UserDetails'),
+                    meta: { title: '用户详情' },
+                    parmas: {}
+                },
+                {
                     name: '3',
                     path: '/3',
                     component: () => import( '../views/pages/manager/3'),
-                    meta: { title: '3' },
+                    meta: { title: '用户详情' },
                     parmas: {}
                 },
                 {
