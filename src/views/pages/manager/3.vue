@@ -6,15 +6,16 @@
                class="demo-form-inline">
         <el-form-item prop="businessMode"
                       label="用户名">
-                      <el-input></el-input>
+                      <el-input v-model="queryForm.patientName"></el-input>
         </el-form-item>
         <el-form-item prop="businessMode"
                       label="订单号">
-                      <el-input></el-input>
+                      <el-input  v-model="queryForm.orderCode"></el-input>
         </el-form-item>
         <el-form-item prop="leaseTime"
                       label="下单时间">
-          <el-date-picker v-model="date" type="date" value-format="yyyy-MM-dd">
+          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-button @click="getTableData()"
@@ -31,12 +32,13 @@
         <el-table-column prop="orderCode"
                          label="订单号/(总疗程)">
         </el-table-column>
-        <el-table-column prop="patient.name"
+        <el-table-column prop=""
                          label="用户名">
-          <template slot-scope="scope">{{scope.row.businessMode == '1' ? '租赁' : '购买'}}</template>
+          <template slot-scope="scope">{{scope.row.patient.name}}</template>
         </el-table-column>
         <el-table-column prop="patient.type"
                          label="用户类型">
+          <template slot-scope="scope">{{scope.row.patient.type == 0 ? '近视' :scope.row.patient.type == 1 ? '弱视' : '斜视'}}</template>
         </el-table-column>
         <el-table-column prop=""
                          label="疗程周期">
@@ -84,6 +86,10 @@ export default {
     return {
       doctorId:'',
       queryForm: {
+        patientName:'',
+        orderCode:'',
+        startTime:'',
+        endTime:'',
         pageParams: {
           pageNum: 1,
           pageSize: 10,
@@ -134,7 +140,7 @@ export default {
   created() {},
   methods: {
     handleCurrentChange(val) {
-      this.queryForm.pageParams.pageNum = val
+      this.queryForm.pageParams.pageNum = val;
       this.getTableData()
     },
     handleSizeChange(val) {
@@ -143,6 +149,10 @@ export default {
       this.getTableData()
     },
     getTableData() {
+      if (this.date != '') {
+        this.queryForm.startTime = this.date[0]
+        this.queryForm.endTime = this.date[1]
+      }
       this.loading = true
       ApiServer.manager.getEquipmentList(this.queryForm).then((res) => {
         this.loading = false

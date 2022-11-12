@@ -23,7 +23,7 @@
                           placeholder="选择日期时间"
                           value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker> -->
-          <el-date-picker v-model="queryForm.durationCount" type="daterange" value-format="yyyy-MM-dd"
+          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
@@ -64,8 +64,8 @@
               }}</el-button>
             <el-button @click="editHandle(scope.row)" type="primary" plain size="small" icon="el-icon-edit">编辑
             </el-button>
-            <el-button @click="delHandle(scope.row)" type="primary" plain size="small" icon="el-icon-delete">用户
-            </el-button>
+            <!-- <el-button @click="delHandle(scope.row)" type="primary" plain size="small" icon="el-icon-delete">用户
+            </el-button> -->
             <el-button @click="toDetails(scope.row)" type="primary" plain size="small">订单</el-button>
           </template>
         </el-table-column>
@@ -86,14 +86,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="视训师识别码" prop="simpleCode">
-            <el-input type="text" placeholder="请输入视训师识别码" v-model="doctorForm.simpleCode" style="width=250px">
+            <el-input disabled type="text" placeholder="请输入视训师识别码" v-model="doctorForm.simpleCode" style="width=250px">
             </el-input>
           </el-form-item>
           <el-form-item label="医生姓名" prop="name">
-            <el-input type="text" placeholder="请输入医生姓名" v-model="doctorForm.name" style="width=250px"></el-input>
+            <el-input  type="text" placeholder="请输入医生姓名" v-model="doctorForm.name" style="width=250px"></el-input>
           </el-form-item>
           <el-form-item label="视训师编码" prop="code">
-            <el-input type="text" placeholder="请输入视训师编码" v-model="doctorForm.code" style="width=250px"></el-input>
+            <el-input disabled type="text" placeholder="请输入视训师编码" v-model="doctorForm.code" style="width=250px"></el-input>
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
             <el-input type="text" placeholder="请输入手机号" v-model="doctorForm.phone" style="width=250px"></el-input>
@@ -163,13 +163,14 @@ export default {
       ],
       date: '',
       queryForm: {
-        startDate: '',
-        endDate: '',
+        startTime: '',
+        endTime:'',
         pageParams: {
           pageNum: 1,
           pageSize: 10,
         },
       },
+      durationCount:'',
       doctorForm: {
         name: '',
         code: '',
@@ -224,6 +225,7 @@ export default {
       //   let pageMax = Math.ceil(this.tableTotals / val)
       console.log(this.queryForm.pageParams.pageNum, this.tableTotals)
       if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return
+      console.log(this.date)
       this.getTableData()
     },
     handleCurrentChange(val) {
@@ -267,17 +269,18 @@ export default {
       row.status = Number(row.status)
       this.editTitle = '编辑医生'
       row.status = Number(row.status)
+      this.doctorForm.simpleCode = 'KE-1'
+      this.doctorForm.code = 'SGZX-KE-0001'
       this.$nextTick(() => {
         // this.doctorForm = JSON.parse(JSON.stringify(row))
         this.doctorForm.address = row.address
         this.doctorForm.age = row.age
-        this.doctorForm.code = row.code
         this.doctorForm.education = row.education
         this.doctorForm.filingTime = row.filingTime
         this.doctorForm.idCard = row.idCard
         this.doctorForm.name = row.name
         this.doctorForm.phone = row.phone
-        this.doctorForm.simpleCode = row.simpleCode
+        this.doctorForm.id = row.id
       })
     },
     addHandle() {
@@ -285,6 +288,8 @@ export default {
       this.buttonDisabled = false
       this.doctorInfoDialog = true
       this.editTitle = '新增医生'
+      this.doctorForm.simpleCode = '系统生成中'
+      this.doctorForm.code = '系统生成中'
       ApiServer.select.selectRoleList().then((res) => {
         if (res.code == 200) {
           this.roleList = res.data
@@ -386,10 +391,9 @@ export default {
     getTableData() {
       this.loading = true
       if (this.date != '') {
-        this.queryForm.startDate = this.date[0]
-        this.queryForm.endDate = this.date[1]
+        this.queryForm.startTime = this.date[0]
+        this.queryForm.endTime = this.date[1]
       }
-      console.log(this.queryForm)
       ApiServer.manager.getDoctorList(this.queryForm).then((res) => {
         if (res.code == 200) {
           this.tableData = res.data.list
@@ -405,3 +409,12 @@ export default {
   mounted() { },
 }
 </script>
+
+<style scoped>
+/deep/ .el-form-item__label{
+  color: #000000;
+}
+/deep/ .el-dialog__header{
+  text-align: center;
+}
+</style>

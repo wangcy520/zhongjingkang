@@ -13,7 +13,7 @@
         </el-col>
         <el-col :span="2">
             <div class="grid-content" v-if="item.treatmentType == 0">频次:{{item.usageCount}} / {{item.usageType==0 ? '天' : '周'}}</div>
-            <div class="grid-content" v-else>频次:{{Math.floor(item.treatmentCount==null ? 0 : item.treatmentCount / item.treatmentDays==null ? 0 : item.treatmentDays )}}天</div>
+            <div class="grid-content" v-else>频次:{{Math.floor((item.treatmentCount==null ? 0 : item.treatmentCount) / (item.treatmentDays==null ? 0 : item.treatmentDays))}}/天</div>
         </el-col>
         <el-col :span="2">
           <div class="grid-content">疗程周期: {{item.treatmentType  == 0 ? item.treatmentCount : item.treatmentDays}}</div>
