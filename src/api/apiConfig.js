@@ -64,7 +64,10 @@ const BASE_URL = process.env.API_ROOT,
         //医生详情管理
         userInfoDetails:BASE_URL + 'backend/order/queryPage',
         //疗程列表
-        getByOrderId:BASE_URL + 'backend/app/getByOrderId'
+        getByOrderId:BASE_URL + 'backend/app/getByOrderId',
+        //用户购买列表
+        getbuyList:BASE_URL + 'backend/purchase/queryPage',
+        buyTimes:BASE_URL + 'backend/purchase/buyTimes'
     }
 export default {
     COMMON,

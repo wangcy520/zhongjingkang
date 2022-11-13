@@ -1,312 +1,237 @@
 <template>
   <div>
     <el-card>
-      <el-form :inline="true"
-               :model="queryForm"
-               class="demo-form-inline">
-        <el-form-item prop="name"
-                      label="用户名">
-          <el-input type="text"
-                    placeholder="请输入用户名名称"
-                    v-model="queryForm.name"></el-input>
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
+        <el-form-item prop="name" label="用户名">
+          <el-input type="text" placeholder="请输入用户名名称" v-model="queryForm.name"></el-input>
         </el-form-item>
-        <el-form-item prop="visualCenter"
-                      label="次/月卡">
-          <el-select v-model="queryForm.visualCenter"
-                     placeholder="全部/次卡/月卡">
-            <el-option v-for="item in nameList"
-                       :key="item.id"
-                       :label="item.name"
-                       :value="item.id">
+        <el-form-item prop="visualCenter" label="次/月卡">
+          <el-select v-model="queryForm.visualCenter" placeholder="全部/次卡/月卡">
+            <el-option v-for="item in nameList" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="name"
-                      label="手机号">
-          <el-input type="text"
-                    placeholder="请输入手机号码"
-                    v-model="queryForm.name"></el-input>
+        <el-form-item prop="name" label="手机号">
+          <el-input type="text" placeholder="请输入手机号码" v-model="queryForm.name"></el-input>
         </el-form-item>
-        <el-form-item prop="status"
-                      label="患者类型">
+        <el-form-item prop="status" label="患者类型">
           <el-select v-model="queryForm.status" placeholder="全部/近视/弱视/斜视">
-            <el-option v-for="item in statusList"
-                       :key="item.code"
-                       :label="item.name"
-                       :value="item.code">
+            <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="status"
-                      label="即将到期">
+        <el-form-item prop="status" label="即将到期">
           <el-select v-model="queryForm.status" placeholder="全部/全部次卡/全部月卡/全部疗程/会员卡">
-            <el-option v-for="item in statusList"
-                       :key="item.code"
-                       :label="item.name"
-                       :value="item.code">
+            <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-button @click="addHandle()"
-                   icon="el-icon-circle-plus-outline"
-                   style="color: #409EFF"
-                   round>新增</el-button>
-        <el-button @click="getTableData()"
-                   icon="el-icon-search"
-                   style="color: #409EFF"
-                   round>查询</el-button>
+        <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
+        <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
       </el-form>
     </el-card>
-    <el-card style="">
-      <el-table :data="tableData"
-                style="width: 100%"
-                v-loading="loading"
-                ref="multipleTable">
-        <el-table-column type="selection"
-                         width="55">
+    <el-card>
+      <el-table :data="tableData" style="width: 100%" v-loading="loading" ref="multipleTable">
+        <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column prop="name"
-                         label="用户名"
-                         width="120"
-                         fixed="left">
+        <el-table-column prop="name" label="用户名" width="120" fixed="left">
         </el-table-column>
-        <el-table-column prop="sex"
-                         label="性别"
-                         width="120">
+        <el-table-column prop="code" label="编号" width="120">
+        </el-table-column>
+        <el-table-column prop="residueCount" width="120" align="center">
+          <template slot="header">
+            <div>月卡(天)</div>
+            <div>全部/已用/剩余</div>
+          </template>
           <template slot-scope="scope">
-            {{scope.row.sex == '1' ? '女' : '男'}}
+            <span>{{ scope.row.count }}/{{ scope.row.count - scope.row.residueCount }}/{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="birthday"
-                         label="出生年月"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop=""
-                         label="年龄"
-                         width="120">
+        <el-table-column prop="" width="140" align="center">
+          <template slot="header">
+            <div>次卡(天)</div>
+            <div>全部/已用/剩余</div>
+          </template>
           <template slot-scope="scope">
-            <p v-if="scope.row.birthday != null">{{newYear - scope.row.birthday.split('-')[0] + 1}}岁</p>
+            <span>{{ scope.row.days }}/{{ scope.row.days - scope.row.residueDays }}/{{ scope.row.residueDays }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="days" label="疗程(天)" width="120" align="center">
+          <template slot="header">
+            <div>疗程(天)</div>
+            <div>全部/已用/剩余</div>
+          </template>
+          <template slot-scope="scope">
+            <span>{{ scope.row.residueCount }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="residueDays" label="疗程(次)" width="120" align="center">
+          <template slot="header">
+            <div>疗程(天)</div>
+            <div>全部/已用/剩余</div>
+          </template>
+          <template slot-scope="scope">
+            <span>{{ scope.row.residueCount }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="type" label="类型" width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.type == 0 ? '近视' : scope.row.type == 1 ? '弱视' : '斜视' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="sex" label="性别" width="120">
+          <template slot-scope="scope">
+            {{ scope.row.sex == '1' ? '女' : '男' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="birthday" label="出生年月" width="120">
+        </el-table-column>
+        <el-table-column prop="" label="年龄" width="120">
+          <template slot-scope="scope">
+            <p v-if="scope.row.birthday != null">{{ newYear - scope.row.birthday.split('-')[0] + 1 }}岁</p>
             <p v-else> </p>
           </template>
         </el-table-column>
-        <el-table-column prop="code"
-                         label="编号"
-                         width="120">
+        <el-table-column prop="phone" label="手机" width="140">
         </el-table-column>
-        <el-table-column prop="parentsName"
-                         label="家长"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop=""
-                         label="关系"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop="phone"
-                         label="手机"
-                         width="140">
-        </el-table-column>
-        <el-table-column prop="doctorName"
-                         label="训练师"
-                         width="140">
-        </el-table-column>
-        <el-table-column prop="days"
-                         label="购买月卡"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop="residueDays"
-                         label="剩余天数"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop="count"
-                         label="购买次卡"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop="residueCount"
-                         label="剩余次数"
-                         width="120">
-        </el-table-column>
-        <el-table-column prop="usefulLife"
-                         label="有效期"
-                         width="150">
-        </el-table-column>
-        <el-table-column prop="introducer"
-                         label="介绍人"
-                         width="150">
-        </el-table-column>
-        <el-table-column label="地址"
-                         width="150">
+        <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
-            <span class="textLink"
-                  @click="addressInfo(scope.row)">查看地址</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="购买记录"
-                         width="150">
-          <template slot-scope="scope">
-            <span class="textLink"
-                  @click="purchaseInfo(scope.row)">查看购买</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop=""
-                         label="训练记录"
-                         width="150">
-          <template slot-scope="scope">
-            <span class="textLink"
-                  @click="trainInfo(scope.row)">查看训练</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop=""
-                         label="视力信息"
-                         width="150">
-          <template slot-scope="scope">
-            <span class="textLink"
-                  @click="visionInfo(scope.row)">查看视力</span>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right"
-                         label="操作"
-                         width="200">
-          <template slot-scope="scope">
-            <!-- <el-button @click="purchaseManagement(scope.row)"
-                       type="danger"
-                       size="small"
-                       icon="el-icon-money">购买管理</el-button> -->
-            <!-- <i class="el-icon-edit-outline"
-               :style="{color:'#409eff','font-size':'25px',cursor: 'pointer'}"
-               @click="editHandle(scope.row)"></i> -->
-            <!-- <i class="el-icon-delete"
-               :style="{color:'red','font-size':'25px',cursor: 'pointer','margin-left': '10px'}"
-               @click="delHandle(scope.row)"></i> -->
-               <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button>
-               <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+            <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button>
+            <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
+            <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit">档案</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="queryForm.pageNum"
-                       :page-sizes="[10, 50, 100, 200]"
-                       :page-size="queryForm.pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="tableTotals">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="queryForm.pageNum" :page-sizes="[10, 50, 100, 200]" :page-size="queryForm.pageSize"
+          layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
         </el-pagination>
       </div>
     </el-card>
     <div>
-      <el-dialog :title="this.editTitle"
-                 :visible.sync="userInfoDialog"
-                 @close="cancel('userInfoForm')">
-        <el-form ref="userInfoForm"
-                 :model="userInfoForm"
-                 :rules="userRules"
-                 label-width="80px"
-                 style="margin-top: 25px;">
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="用户名"
-                            prop="name">
-                <el-input type="text"
-                          v-model="userInfoForm.name"></el-input>
-              </el-form-item>
-              <el-form-item label="出生年月"
-                            prop="birthday">
-                <el-date-picker v-model="userInfoForm.birthday"
-                                type="date"
-                                placeholder="选择日期"
-                                value-format="yyyy-MM-dd">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item label="家长"
-                            prop="parentsName">
-                <el-input type="text"
-                          v-model="userInfoForm.parentsName"></el-input>
-              </el-form-item>
-              <el-form-item label="手机号码"
-                            prop="phone">
-                <el-input type="text"
-                          v-model="userInfoForm.phone"></el-input>
-              </el-form-item>
-              <!-- <el-form-item label="购买月卡"
-                            prop="days">
-                <el-input type="text"
-                          v-model="userInfoForm.days"></el-input>
-              </el-form-item>
-              <el-form-item label="购买次卡"
-                            prop="count">
-                <el-input type="text"
-                          v-model="userInfoForm.count"></el-input>
-              </el-form-item> -->
-              <!-- <el-form-item label="赠送额"
-                            prop="giftAmount">
-                <el-input type="text"
-                          v-model="userInfoForm.giftAmount"></el-input>
-              </el-form-item> -->
-            </el-col>
-            <el-col :span='12'>
-              <el-form-item label="性别"
-                            prop="sex">
-                <el-select v-model="userInfoForm.sex">
-                  <el-option v-for="item in sexList"
-                             :key="item.code"
-                             :label="item.name"
-                             :value="item.code">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <!-- <el-form-item label="编号"
-                            prop="code">
-                <el-input type="text"
-                          v-model="userInfoForm.code"></el-input>
-              </el-form-item> -->
-              <el-form-item label="关系"
-                            prop="relation">
-                <el-input type="text"
-                          v-model="userInfoForm.relation"></el-input>
-              </el-form-item>
-              <el-form-item label="训练师"
-                            prop="doctorId">
-                <el-select v-model="queryForm.doctorId"
-                           placeholder="请选择视光中心">
-                  <el-option v-for="item in doctorList"
-                             :key="item.id"
-                             :label="item.name"
-                             :value="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <!-- <el-form-item label="剩余天数"
-                            prop="residueDays">
-                <el-input type="text"
-                          v-model="userInfoForm.residueDays"></el-input>
-              </el-form-item>
-              <el-form-item label="剩余次数"
-                            prop="residueCount">
-                <el-input type="text"
-                          v-model="userInfoForm.residueCount"></el-input>
-              </el-form-item> -->
-              <el-form-item label="介绍人"
-                            prop="introducer">
-                <el-input type="text"
-                          v-model="userInfoForm.introducer"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="有效期"
-                        prop="usefulLife">
-            <el-date-picker v-model="userInfoForm.usefulLife"
-                            type="date"
-                            placeholder="选择日期"
-                            value-format="yyyy-MM-dd">
+      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel('userInfoForm')">
+        <el-steps :active="active" :space="300" align-center style="display: flex;justify-content: center;">
+          <el-step title="基础信息" icon="el-icon-success"></el-step>
+          <el-step title="健康档案"></el-step>
+        </el-steps>
+        <el-form :model="userInfoForm" ref="userInfoForm" label-width="80px" :inline="true" class="userForm"
+          style="margin: 50px;" v-if="diolog == 1" :rules="userRules">
+          <el-form-item label="用户名" style="display: flex;width:30%" prop="name">
+            <el-input style="width:100%" v-model="userInfoForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="用户编号" style="display: flex;width:30%" prop="code">
+            <el-input style="width:100%" v-model="userInfoForm.code"></el-input>
+          </el-form-item>
+          <el-form-item label="出生年月" style="display: flex;width:30%" prop="birthday">
+            <!-- <el-input style="width:100%" v-model="userInfoForm.birthday"></el-input> -->
+            <el-date-picker style="width:200px" v-model="userInfoForm.birthday" type="month" format="yyyy-MM"
+              value-format="yyyy-MM-dd" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
+          <el-form-item label="性别" style="display: flex;width:30%" prop="sex">
+            <el-select v-model="userInfoForm.sex" placeholder="请选择" style="width:200px">
+              <el-option v-for="item in sexList" :key="item.code" :label="item.name" :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="身份证号" style="display: flex;width:30%">
+            <el-input style="width:100%" v-model="userInfoForm.idCard"></el-input>
+          </el-form-item>
+          <el-form-item label="地址" style="display: flex;width:30%" prop="area">
+            <el-input style="width:100%" v-model="userInfoForm.area"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" style="display: flex;width:30%" prop="phone">
+            <el-input style="width:100%" v-model="userInfoForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="家长名" style="display: flex;width:30%" prop="parentsName">
+            <el-input style="width:100%" v-model="userInfoForm.parentsName"></el-input>
+          </el-form-item>
+          <el-form-item label="关系" style="display: flex;width:30%">
+            <el-input style="width:100%" v-model="userInfoForm.relation"></el-input>
+          </el-form-item>
+          <el-form-item label="状态" style="display: flex;width:30%">
+            <el-input style="width:100%" v-model="userInfoForm.state"></el-input>
+          </el-form-item>
         </el-form>
-        <span slot="footer"
-              class="dialog-footer">
+        <el-form style="margin: 50px;" v-if="diolog == 2">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <div class="grid-content bg-purple">*视力</div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple" style="line-height:33px">裸眼视力</div>
+                  <div class="grid-content bg-purple" style="line-height:33px">矫正视力</div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple">左眼
+                    <el-input v-model="archivesInfo.eyesight.leftUcva" style="width:50px"></el-input>
+                  </div>
+                  <div class="grid-content bg-purple">左眼
+                    <el-input v-model="archivesInfo.eyesight.leftCva" style="width:50px"></el-input>
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple">右眼
+                    <el-input v-model="archivesInfo.eyesight.rightUcva" style="width:50px"></el-input>
+                  </div>
+                  <div class="grid-content bg-purple">右眼
+                    <el-input v-model="archivesInfo.eyesight.rightCva" style="width:50px"></el-input>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="12">
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <div class="grid-content bg-purple">*屈光度</div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple" style="line-height:25px;opacity: 0;">1</div>
+                  <div class="grid-content bg-purple" style="line-height:25px">左眼</div>
+                  <div class="grid-content bg-purple" style="line-height:25px">右眼</div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple">球镜
+                  </div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.leftSphere" style="width:80px"></el-input>
+                  </div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.rightSphere" style="width:80px"></el-input>
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple">柱镜</div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.leftCylinder" style="width:80px"></el-input>
+                  </div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.rightCylinder" style="width:80px"></el-input>
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content bg-purple">轴位</div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.leftAxial" style="width:80px"></el-input>
+                  </div>
+                  <div class="grid-content bg-purple">
+                    <el-input v-model="archivesInfo.dioptric.rightAxial" style="width:80px"></el-input>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
           <el-button @click="cancel('userInfoForm')">取 消</el-button>
-          <el-button type="primary"
-                     @click="submitUserInfo('userInfoForm')"
-                     :disabled="buttonDisabled">确 定</el-button>
+          <el-button type="primary" @click="diolog = 2, active = 2" v-if="diolog == 1">确 定</el-button>
+          <el-button type="primary" @click="diolog = 1, active = 1" v-if="diolog == 2">上一步</el-button>
+          <el-button type="primary" @click="submitUserInfo('userInfoForm')" :disabled="buttonDisabled"
+            v-if="diolog == 2">
+            确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -317,6 +242,8 @@ import ApiServer from '@/api/apiServer'
 export default {
   data() {
     return {
+      diolog: 1,
+      active: 1,
       newYear: '',
       nameList: [],
       statusList: [
@@ -343,7 +270,34 @@ export default {
           id: '1',
         },
       ],
-      userInfoForm: {},
+      userInfoForm: {
+        name: '',
+        code: '',
+        birthday: '',
+        sex: '',
+        area: '',
+        phone: '',
+        parentsName: '',
+        relation: '',
+        idCard: '',
+        state: ''
+      },
+      archivesInfo: {
+        eyesight: {
+          leftUcva: "",
+          leftCva: "",
+          rightUcva: "",
+          rightCva: ""
+        },
+        dioptric: {
+          leftSphere: "",
+          leftCylinder: "",
+          leftAxial: "",
+          rightSphere: "",
+          rightCylinder: "",
+          rightAxial: ""
+        }
+      },
       sexList: [
         {
           code: 0,
@@ -371,9 +325,6 @@ export default {
           },
         ],
         code: [{ required: true, message: '请输入编号', trigger: 'blur' }],
-        doctorName: [
-          { required: true, message: '请输入训练师', trigger: 'blur' },
-        ],
         sex: [{ required: true, message: '请输入性别', trigger: 'blur' }],
       },
       doctorList: [],
@@ -426,13 +377,34 @@ export default {
       // this.$nextTick(() => {
       //   this.userInfoForm = JSON.parse(JSON.stringify(row))
       // })
-      this.$router.push({ name: 'userDetails', params: row })
+      let obj = { ...row }
+      console.log(obj)
+      this.$router.push({ name: 'userDetails', query: obj })
+    },
+    edit(row) {
+      console.log(row)
+      this.isAdd = false;
+      this.buttonDisabled = false;
+      this.userInfoDialog = true;
+      this.userInfoForm = { ...row };
+      this.userInfoForm.name = row.name;
+      this.userInfoForm.code = row.code;
+      this.userInfoForm.birthday = row.birthday;
+      this.userInfoForm.area = row.area;
+      this.userInfoForm.phone = row.phone;
+      this.userInfoForm.parentsName = row.parentsName;
+      this.userInfoForm.relation = row.relation;
+      this.userInfoForm.idCard = row.idCard;
+      this.userInfoForm.state = row.state;
+      this.userInfoForm.sex = Number(row.sex)
+      this.userInfoForm.id = row.id
+      this.archivesInfo = JSON.parse(row.healthRecord)
     },
     addHandle() {
       this.isAdd = true
       this.buttonDisabled = false
       this.userInfoDialog = true
-      this.editTitle = '新增用户'
+      this.editTitle = '用户基础信息'
     },
     delHandle(row) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
@@ -464,24 +436,27 @@ export default {
         })
     },
     cancel(form) {
-      this.$refs[form].resetFields()
       this.userInfoDialog = false
+      this.$refs[form].resetFields()
     },
     submitUserInfo(form) {
+      this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
+      console.log(this.userInfoForm)
       this.buttonDisabled = true
-      this.$refs.userInfoForm.validate((valid) => {
-        if (valid) {
-          var requestAddr = this.isAdd == false ? 'updateUserInfo' : 'saveUser'
-          ApiServer.manager[requestAddr](this.userInfoForm).then((res) => {
-            if (res.code == 200) {
-              this.userInfoDialog = false
-              this.$refs[form].resetFields()
-              this.userInfoForm.roleIds = []
-              this.getTableData()
-            }
-          })
+      // this.$refs.userInfoForm.validate((valid) => {
+      //   if (valid) {
+      var requestAddr = this.isAdd == false ? 'updateUserInfo' : 'saveUser'
+      ApiServer.manager[requestAddr](this.userInfoForm).then((res) => {
+        if (res.code == 200) {
+          this.userInfoDialog = false;
+          if (this.$refs.form !== undefined) { this.$refs.form.resetFields() }
+          this.userInfoForm.roleIds = [];
+          this.getTableData();
+          this.$message({ message: '操作成功', type: 'success' });
         }
       })
+      //   }
+      // })
     },
     batchDel() {
       this.DelIdList = []
@@ -557,8 +532,8 @@ export default {
     purchaseInfo(row) {
       this.$router.push({ name: 'visionInfo', params: row })
     },
-    trainInfo() {},
-    visionInfo() {},
+    trainInfo() { },
+    visionInfo() { },
     purchaseManagement(row) {
       this.$router.push({ name: 'purchaseManager', params: row })
     },
@@ -570,22 +545,22 @@ export default {
       })
     },
     open() {
-        this.$confirm('确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+      this.$confirm('确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
         });
-      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    }
   },
   mounted() {
     var date = new Date()
@@ -601,5 +576,31 @@ export default {
 .textLink {
   cursor: pointer;
   color: blue;
+}
+
+/deep/ .el-form-item__label {
+  color: #000000;
+}
+
+/deep/ .el-dialog__header {
+  text-align: center;
+}
+
+.title {
+  padding: 20px 10px;
+  color: rgb(27, 139, 214);
+}
+
+.grid-content {
+  padding: 10px 0;
+  color: #000000;
+  font-size: 14px;
+}
+
+.userForm {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 50px 150px;
 }
 </style>

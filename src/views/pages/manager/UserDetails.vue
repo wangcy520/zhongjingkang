@@ -4,21 +4,21 @@
         <el-card>
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <div class="grid-content bg-purple">用户名:A</div>
+                    <div class="grid-content bg-purple">用户名:{{ item.name }}</div>
                 </el-col>
                 <el-col :span="6">
-                    <div class="grid-content bg-purple">性别:男</div>
+                    <div class="grid-content bg-purple">性别:{{ item.sex == '0' ? '男' : '女' }}</div>
                 </el-col>
                 <el-col :span="6">
                     <div class="grid-content bg-purple">年龄:8</div>
                 </el-col>
                 <el-col :span="6">
-                    <div class="grid-content bg-purple">手机号:1222</div>
+                    <div class="grid-content bg-purple">手机号:{{ item.phone }}</div>
                 </el-col>
             </el-row>
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <div class="grid-content bg-purple">用户编号:A</div>
+                    <div class="grid-content bg-purple">用户编号:{{ item.code }}</div>
                 </el-col>
                 <el-col :span="6">
                     <div class="grid-content bg-purple">视训师:男</div>
@@ -44,83 +44,122 @@
                             <div class="grid-content bg-purple">矫正视力</div>
                         </el-col>
                         <el-col :span="6">
-                            <div class="grid-content bg-purple">左眼</div>
-                            <div class="grid-content bg-purple">左眼</div>
+                            <div class="grid-content bg-purple">左眼
+                                <el-input v-model="userArchives.eyesight.leftUcva" style="width:50px"></el-input>
+                            </div>
+                            <div class="grid-content bg-purple">左眼
+                                <el-input v-model="userArchives.eyesight.leftCva" style="width:50px"></el-input>
+                            </div>
                         </el-col>
                         <el-col :span="6">
-                            <div class="grid-content bg-purple">右眼</div>
-                            <div class="grid-content bg-purple">右眼</div>
+                            <div class="grid-content bg-purple">右眼
+                                <el-input v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input>
+                            </div>
+                            <div class="grid-content bg-purple">右眼
+                                <el-input v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input>
+                            </div>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span="12">
                     <el-row :gutter="20">
                         <el-col :span="24">
-                            <div class="grid-content bg-purple">*视力</div>
+                            <div class="grid-content bg-purple">*屈光度</div>
                         </el-col>
                         <el-col :span="6">
-                            <div class="grid-content bg-purple">裸眼视力</div>
-                            <div class="grid-content bg-purple">矫正视力</div>
+                            <div class="grid-content bg-purple" style="line-height:25px;opacity: 0;">1</div>
+                            <div class="grid-content bg-purple" style="line-height:25px">左眼</div>
+                            <div class="grid-content bg-purple" style="line-height:25px">右眼</div>
                         </el-col>
                         <el-col :span="6">
-                            <div class="grid-content bg-purple">左眼</div>
-                            <div class="grid-content bg-purple">左眼</div>
+                            <div class="grid-content bg-purple">球镜
+                            </div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.leftSphere" style="width:80px"></el-input>
+                            </div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.rightSphere" style="width:80px"></el-input>
+                            </div>
                         </el-col>
                         <el-col :span="6">
-                            <div class="grid-content bg-purple">右眼</div>
-                            <div class="grid-content bg-purple">右眼</div>
+                            <div class="grid-content bg-purple">柱镜</div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.leftCylinder" style="width:80px"></el-input>
+                            </div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.rightCylinder" style="width:80px"></el-input>
+                            </div>
+                        </el-col>
+                        <el-col :span="6">
+                            <div class="grid-content bg-purple">轴位</div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.leftAxial" style="width:80px"></el-input>
+                            </div>
+                            <div class="grid-content bg-purple">
+                                <el-input v-model="userArchives.dioptric.rightAxial" style="width:80px"></el-input>
+                            </div>
                         </el-col>
                     </el-row>
                 </el-col>
             </el-row>
-            <el-button icon="el-icon-plus" type="success" style="margin-top:30px;" @click="buy">购买</el-button>
+            <el-button icon="el-icon-plus" type="success" style="margin-top:30px;" @click="buy" plain>购买</el-button>
         </el-card>
         <div class="title">购买记录</div>
         <el-card>
             <el-table :data="tableData" style="width: 100%" v-loading="loading" ref="multipleTable">
                 <el-table-column prop="name" label="用户名">
                 </el-table-column>
-                <el-table-column prop="name" label="类型">
+                <el-table-column prop="purchaseType" label="类型">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.purchaseType == 0 ? '次卡' : '月卡' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="name" label="购买数量">
+                <el-table-column prop="purchaseCount" label="购买数量">
                 </el-table-column>
-                <el-table-column prop="name" label="剩余数量">
+                <el-table-column prop="residueCount" label="剩余数量">
                 </el-table-column>
-                <el-table-column prop="name" label="购买时间">
+                <el-table-column prop="purchaseTime" label="购买时间">
                 </el-table-column>
-                <el-table-column prop="name" label="有效期">
+                <el-table-column prop="usefulLife" label="有效期">
                 </el-table-column>
             </el-table>
+            <div class="block">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="pageParams.pageNum" :page-sizes="[10, 50, 100, 200]" :page-size="pageParams.pageSize"
+                    layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
+                </el-pagination>
+            </div>
         </el-card>
 
         <el-dialog title="购买信息" :visible.sync="buyModel" width="50%">
             <el-form ref="form" :model="buyForm" label-width="80px" :inline="true" class="userForm">
                 <el-form-item style="width:100%;margin-left: 80px;">
-                    <el-radio v-model="radio" label="1">次卡</el-radio>
-                    <el-radio v-model="radio" label="2">月卡</el-radio>
+                    <el-radio v-model="buyForm.type" label="0">次卡</el-radio>
+                    <el-radio v-model="buyForm.type" label="1">月卡</el-radio>
                 </el-form-item>
                 <el-form-item label="数量">
-                    <el-input style="width:300px"></el-input>
+                    <el-input v-model="buyForm.count" style="width:300px"></el-input>
                 </el-form-item>
                 <el-form-item label="价格">
                     <el-input style="width:300px"></el-input>
                 </el-form-item>
                 <el-form-item label="有效期">
-                    <el-input style="width:300px"></el-input>
+                    <el-date-picker v-model="buyForm.usefulLife" type="date" style="width:300px" placeholder="选择日期">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="卡号">
                     <el-input style="width:300px"></el-input>
                 </el-form-item>
                 <el-form-item style="width:100%;margin-left: 25px;">
-                    <span>总购买记录：月卡：60次 次卡：10次</span>
+                    <span>总购买记录：月卡：{{ item.count }}次 次卡：{{ item.residueCount }}次</span>
                 </el-form-item>
                 <el-form-item style="width:100%;margin-left: 25px;">
-                    <span>总剩余次数：月卡：60次 次卡：10次</span>
+                    <span>总剩余次数：月卡：{{ item.days }}次 次卡：{{ item.residueDays }}次</span>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="buyModel = false">取 消</el-button>
-                <el-button type="primary" @click="confirm">确 定</el-button>
+                <el-button type="primary" @click="confirm" plain>确 定</el-button>
             </span>
         </el-dialog>
 
@@ -167,15 +206,27 @@
 
 
 <script>
+import ApiServer from '@/api/apiServer'
 export default {
     data() {
         return {
             tableData: [],
-            buyForm: {},
+            buyForm: {
+                count:'',
+                usefulLife:'',
+                type:'',
+                patientId:'',
+            },
             loading: false,
-            buyModel: true,
-            userModel: false,
+            buyModel: false,
             radio: '1',
+            item: {},
+            userArchives: {},
+            pageParams: {
+                pageNum: 1,
+                pageSize: 10
+            },
+            tableTotals: 1,
         }
     },
     created() { },
@@ -191,7 +242,10 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                that.userModel = true
+                this.buyForm.patientId = this.item.id
+                ApiServer.manager.buyTimes(this.buyForm).then(res=>{
+                    console.log(res)
+                })
                 this.$message({
                     type: 'success',
                     message: '选择确认啦'
@@ -202,8 +256,38 @@ export default {
         submit() {
 
         },
+        getbuyList() {
+            let params = {
+                patientId: this.item.id,
+                pageParams: {
+                    pageNum: this.pageParams.pageNum,
+                    pageSize: this.pageParams.pageSize
+                }
+            }
+            ApiServer.manager.getbuyList(params).then(res => {
+                if (res.code == 200) {
+                    this.tableData = res.data.list
+                }
+            })
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`)
+            this.pageParams.pageNum = val
+            this.getbuyList()
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`)
+            this.pageParams.pageSize = val
+            if (this.pageParams.pageNum * val > this.tableTotals) return
+            this.getbuyList()
+        },
     },
-    mounted() { },
+    mounted() {
+        this.item = this.$route.query;
+        console.log(this.item)
+        this.userArchives = JSON.parse(this.item.healthRecord)
+        this.getbuyList();
+    },
 }
 </script>
 
@@ -229,4 +313,11 @@ export default {
     content:'';
     flex: auto;
 } */
+/deep/ .el-form-item__label {
+    color: #000000;
+}
+
+/deep/ .el-dialog__header {
+    text-align: center;
+}
 </style>

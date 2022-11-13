@@ -169,6 +169,12 @@ class ApiService {
                 getByOrderId: function (params) {
                     return request.get(API.MANAGER.getByOrderId, params)
                 },
+                getbuyList:function(params){
+                    return request.post1(API.MANAGER.getbuyList, params);
+                },
+                buyTimes:function(params){
+                    return request.post1(API.MANAGER.buyTimes, params);
+                },
             }
     }
 }

@@ -2,27 +2,7 @@
   <div>
     <el-card>
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-        <!-- <el-form-item prop="doctorName" label="训练师">
-          <el-input type="text" placeholder="请输入训练师名称" v-model="queryForm.name"></el-input>
-        </el-form-item>
-        <el-form-item prop="visualCenter" label="视光中心">
-          <el-select v-model="queryForm.visualCenter" placeholder="请选择视光中心">
-            <el-option v-for="item in nameList" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="status" label='当前状态'>
-          <el-select v-model="queryForm.status">
-            <el-option v-for="item in statusList" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="时间周期" prop="date">
-          <!-- <el-date-picker v-model="queryForm.date"
-                          type="datetime"
-                          placeholder="选择日期时间"
-                          value-format="yyyy-MM-dd HH:mm:ss">
-          </el-date-picker> -->
           <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>

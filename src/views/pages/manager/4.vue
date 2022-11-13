@@ -137,6 +137,6 @@ export default {
 .grid-content {
   color: #333;
   padding-bottom: 20px;
-  font-weight: 600;
+  /* font-weight: 600; */
 }
 </style>
