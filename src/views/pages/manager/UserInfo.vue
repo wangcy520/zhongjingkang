@@ -32,8 +32,7 @@
     </el-card>
     <el-card>
       <el-table :data="tableData" style="width: 100%" v-loading="loading" ref="multipleTable">
-        <el-table-column type="selection" width="55">
-        </el-table-column>
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="name" label="用户名" width="120" fixed="left">
         </el-table-column>
         <el-table-column prop="code" label="编号" width="120">
@@ -44,7 +43,9 @@
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.count }}/{{ scope.row.count - scope.row.residueCount }}/{{ scope.row.residueCount }}</span>
+            <span>{{ scope.row.count }}/{{
+                scope.row.count - scope.row.residueCount
+            }}/{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="" width="140" align="center">
@@ -53,7 +54,9 @@
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.days }}/{{ scope.row.days - scope.row.residueDays }}/{{ scope.row.residueDays }}</span>
+            <span>{{ scope.row.days }}/{{
+                scope.row.days - scope.row.residueDays
+            }}/{{ scope.row.residueDays }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="days" label="疗程(天)" width="120" align="center">
@@ -76,20 +79,28 @@
         </el-table-column>
         <el-table-column prop="type" label="类型" width="120">
           <template slot-scope="scope">
-            <span>{{ scope.row.type == 0 ? '近视' : scope.row.type == 1 ? '弱视' : '斜视' }}</span>
+            <span>{{
+                scope.row.type == 0
+                  ? "近视"
+                  : scope.row.type == 1
+                    ? "弱视"
+                    : "斜视"
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="sex" label="性别" width="120">
           <template slot-scope="scope">
-            {{ scope.row.sex == '1' ? '女' : '男' }}
+            {{ scope.row.sex == "1" ? "女" : "男" }}
           </template>
         </el-table-column>
         <el-table-column prop="birthday" label="出生年月" width="120">
         </el-table-column>
         <el-table-column prop="" label="年龄" width="120">
           <template slot-scope="scope">
-            <p v-if="scope.row.birthday != null">{{ newYear - scope.row.birthday.split('-')[0] + 1 }}岁</p>
-            <p v-else> </p>
+            <p v-if="scope.row.birthday != null">
+              {{ newYear - scope.row.birthday.split("-")[0] + 1 }}岁
+            </p>
+            <p v-else></p>
           </template>
         </el-table-column>
         <el-table-column prop="phone" label="手机" width="140">
@@ -97,8 +108,9 @@
         <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
             <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button>
-            <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
-            <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit">档案</el-button>
+            <el-button @click="edit(scope.row)" type="primary" size="small" plain>编辑</el-button>
+            <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit" plain>档案
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -110,47 +122,47 @@
       </div>
     </el-card>
     <div>
-      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel('userInfoForm')">
+      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel()">
         <el-steps :active="active" :space="300" align-center style="display: flex;justify-content: center;">
           <el-step title="基础信息" icon="el-icon-success"></el-step>
           <el-step title="健康档案"></el-step>
         </el-steps>
-        <el-form :model="userInfoForm" ref="userInfoForm" label-width="80px" :inline="true" class="userForm"
+        <el-form :model="userInfoForm" ref="userInfoForm" label-width="150px" :inline="true" class="userForm"
           style="margin: 50px;" v-if="diolog == 1" :rules="userRules">
-          <el-form-item label="用户名" style="display: flex;width:30%" prop="name">
+          <el-form-item label="用户名" prop="name">
             <el-input style="width:100%" v-model="userInfoForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="用户编号" style="display: flex;width:30%" prop="code">
+          <el-form-item label="用户编号" prop="code">
             <el-input style="width:100%" v-model="userInfoForm.code"></el-input>
           </el-form-item>
-          <el-form-item label="出生年月" style="display: flex;width:30%" prop="birthday">
+          <el-form-item label="出生年月" prop="birthday">
             <!-- <el-input style="width:100%" v-model="userInfoForm.birthday"></el-input> -->
             <el-date-picker style="width:200px" v-model="userInfoForm.birthday" type="month" format="yyyy-MM"
               value-format="yyyy-MM-dd" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="性别" style="display: flex;width:30%" prop="sex">
+          <el-form-item label="性别" prop="sex">
             <el-select v-model="userInfoForm.sex" placeholder="请选择" style="width:200px">
               <el-option v-for="item in sexList" :key="item.code" :label="item.name" :value="item.code">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="身份证号" style="display: flex;width:30%">
+          <el-form-item label="身份证号" prop="idCard">
             <el-input style="width:100%" v-model="userInfoForm.idCard"></el-input>
           </el-form-item>
-          <el-form-item label="地址" style="display: flex;width:30%" prop="area">
+          <el-form-item label="地址" prop="area">
             <el-input style="width:100%" v-model="userInfoForm.area"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" style="display: flex;width:30%" prop="phone">
+          <el-form-item label="手机号" prop="phone">
             <el-input style="width:100%" v-model="userInfoForm.phone"></el-input>
           </el-form-item>
-          <el-form-item label="家长名" style="display: flex;width:30%" prop="parentsName">
+          <el-form-item label="家长名" prop="parentsName">
             <el-input style="width:100%" v-model="userInfoForm.parentsName"></el-input>
           </el-form-item>
-          <el-form-item label="关系" style="display: flex;width:30%">
+          <el-form-item label="关系" prop="relation">
             <el-input style="width:100%" v-model="userInfoForm.relation"></el-input>
           </el-form-item>
-          <el-form-item label="状态" style="display: flex;width:30%">
+          <el-form-item label="状态" prop="state">
             <el-input style="width:100%" v-model="userInfoForm.state"></el-input>
           </el-form-item>
         </el-form>
@@ -162,22 +174,30 @@
                   <div class="grid-content bg-purple">*视力</div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="grid-content bg-purple" style="line-height:33px">裸眼视力</div>
-                  <div class="grid-content bg-purple" style="line-height:33px">矫正视力</div>
+                  <div class="grid-content bg-purple" style="line-height:33px">
+                    裸眼视力
+                  </div>
+                  <div class="grid-content bg-purple" style="line-height:33px">
+                    矫正视力
+                  </div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="grid-content bg-purple">左眼
+                  <div class="grid-content bg-purple">
+                    左眼
                     <el-input v-model="archivesInfo.eyesight.leftUcva" style="width:50px"></el-input>
                   </div>
-                  <div class="grid-content bg-purple">左眼
+                  <div class="grid-content bg-purple">
+                    左眼
                     <el-input v-model="archivesInfo.eyesight.leftCva" style="width:50px"></el-input>
                   </div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="grid-content bg-purple">右眼
+                  <div class="grid-content bg-purple">
+                    右眼
                     <el-input v-model="archivesInfo.eyesight.rightUcva" style="width:50px"></el-input>
                   </div>
-                  <div class="grid-content bg-purple">右眼
+                  <div class="grid-content bg-purple">
+                    右眼
                     <el-input v-model="archivesInfo.eyesight.rightCva" style="width:50px"></el-input>
                   </div>
                 </el-col>
@@ -189,13 +209,18 @@
                   <div class="grid-content bg-purple">*屈光度</div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="grid-content bg-purple" style="line-height:25px;opacity: 0;">1</div>
-                  <div class="grid-content bg-purple" style="line-height:25px">左眼</div>
-                  <div class="grid-content bg-purple" style="line-height:25px">右眼</div>
+                  <div class="grid-content bg-purple" style="line-height:25px;opacity: 0;">
+                    1
+                  </div>
+                  <div class="grid-content bg-purple" style="line-height:25px">
+                    左眼
+                  </div>
+                  <div class="grid-content bg-purple" style="line-height:25px">
+                    右眼
+                  </div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="grid-content bg-purple">球镜
-                  </div>
+                  <div class="grid-content bg-purple">球镜</div>
                   <div class="grid-content bg-purple">
                     <el-input v-model="archivesInfo.dioptric.leftSphere" style="width:80px"></el-input>
                   </div>
@@ -227,9 +252,9 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="cancel('userInfoForm')">取 消</el-button>
-          <el-button type="primary" @click="diolog = 2, active = 2" v-if="diolog == 1">确 定</el-button>
-          <el-button type="primary" @click="diolog = 1, active = 1" v-if="diolog == 2">上一步</el-button>
-          <el-button type="primary" @click="submitUserInfo('userInfoForm')" :disabled="buttonDisabled"
+          <el-button type="primary" @click="submit" v-if="diolog == 1" plain>确 定</el-button>
+          <el-button type="primary" @click="(diolog = 1), (active = 1)" v-if="diolog == 2" plain>上一步</el-button>
+          <el-button type="primary" @click="submitUserInfo('userInfoForm')" :disabled="buttonDisabled" plain
             v-if="diolog == 2">
             确 定</el-button>
         </span>
@@ -238,49 +263,49 @@
   </div>
 </template>
 <script>
-import ApiServer from '@/api/apiServer'
+import ApiServer from "@/api/apiServer";
 export default {
-  data() {
+  data () {
     return {
       diolog: 1,
       active: 1,
-      newYear: '',
+      newYear: "",
       nameList: [],
       statusList: [
         {
-          name: '全部',
-          id: null,
+          name: "全部",
+          id: null
         },
         {
-          name: '正常运行',
-          code: '0',
+          name: "正常运行",
+          code: "0"
         },
         {
-          name: '设备故障',
-          code: '1',
-        },
+          name: "设备故障",
+          code: "1"
+        }
       ],
       cardTypeList: [
         {
-          name: '次卡',
-          id: '0',
+          name: "次卡",
+          id: "0"
         },
         {
-          name: '月卡',
-          id: '1',
-        },
+          name: "月卡",
+          id: "1"
+        }
       ],
       userInfoForm: {
-        name: '',
-        code: '',
-        birthday: '',
-        sex: '',
-        area: '',
-        phone: '',
-        parentsName: '',
-        relation: '',
-        idCard: '',
-        state: ''
+        name: "",
+        code: "",
+        birthday: "",
+        sex: "",
+        area: "",
+        phone: "",
+        parentsName: "",
+        relation: "",
+        idCard: "",
+        state: ""
       },
       archivesInfo: {
         eyesight: {
@@ -301,37 +326,37 @@ export default {
       sexList: [
         {
           code: 0,
-          name: '男',
+          name: "男"
         },
         {
           code: 1,
-          name: '女',
-        },
+          name: "女"
+        }
       ],
       userRules: {
-        name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         birthday: [
-          { required: true, message: '请输入出生年月', trigger: 'blur' },
+          { required: true, message: "请输入出生年月", trigger: "blur" }
         ],
         parentsName: [
-          { required: true, message: '请输入家长', trigger: 'blur' },
+          { required: true, message: "请输入家长", trigger: "blur" }
         ],
         phone: [
           {
             required: true,
-            message: '请输入电话号码',
+            message: "请输入电话号码",
             validator: this.commonJS.checkPhone,
-            trigger: 'blur',
-          },
+            trigger: "blur"
+          }
         ],
-        code: [{ required: true, message: '请输入编号', trigger: 'blur' }],
-        sex: [{ required: true, message: '请输入性别', trigger: 'blur' }],
+        code: [{ required: true, message: "请输入编号", trigger: "blur" }],
+        sex: [{ required: true, message: "请输入性别", trigger: "blur" }]
       },
       doctorList: [],
-      date: '',
+      date: "",
       buttonDisabled: false,
       loading: false,
-      editTitle: '',
+      editTitle: "",
       isAdd: false,
       userInfoDialog: false,
       tableData: [],
@@ -340,35 +365,35 @@ export default {
         doctorId: null,
         parentsName: null,
         visualCenter: null,
-        startDate: '',
-        endDate: '',
+        startDate: "",
+        endDate: "",
         pageParams: {
           pageNum: 1,
-          pageSize: 10,
-        },
+          pageSize: 10
+        }
       },
-      tableTotals: 1,
-    }
+      tableTotals: 1
+    };
   },
   components: {},
-  created() {
-    this.getTableData()
+  created () {
+    this.getTableData();
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.queryForm.pageSize = val
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`);
+      this.queryForm.pageSize = val;
       //   let pageMax = Math.ceil(this.tableTotals / val)
-      console.log(this.queryForm.pageParams.pageNum, this.tableTotals)
-      if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return
-      this.getTableData()
+      console.log(this.queryForm.pageParams.pageNum, this.tableTotals);
+      if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return;
+      this.getTableData();
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.queryForm.pageParams.pageNum = val
-      this.getTableData()
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`);
+      this.queryForm.pageParams.pageNum = val;
+      this.getTableData();
     },
-    editHandle(row) {
+    editHandle (row) {
       // this.isAdd = false
       // this.buttonDisabled = false
       // this.userInfoDialog = true
@@ -377,12 +402,13 @@ export default {
       // this.$nextTick(() => {
       //   this.userInfoForm = JSON.parse(JSON.stringify(row))
       // })
-      let obj = { ...row }
-      console.log(obj)
-      this.$router.push({ name: 'userDetails', query: obj })
+      let obj = { ...row };
+      console.log(obj);
+      this.$router.push({ name: "userDetails", query: obj });
     },
-    edit(row) {
-      console.log(row)
+    edit (row) {
+      console.log(row);
+      this.editTitle = "编辑基础信息";
       this.isAdd = false;
       this.buttonDisabled = false;
       this.userInfoDialog = true;
@@ -396,181 +422,223 @@ export default {
       this.userInfoForm.relation = row.relation;
       this.userInfoForm.idCard = row.idCard;
       this.userInfoForm.state = row.state;
-      this.userInfoForm.sex = Number(row.sex)
-      this.userInfoForm.id = row.id
-      this.archivesInfo = JSON.parse(row.healthRecord)
+      this.userInfoForm.sex = Number(row.sex);
+      this.userInfoForm.id = row.id;
+      if (!row.healthRecord) {
+        this.archivesInfo = {
+          eyesight: {
+            leftUcva: "",
+            leftCva: "",
+            rightUcva: "",
+            rightCva: ""
+          },
+          dioptric: {
+            leftSphere: "",
+            leftCylinder: "",
+            leftAxial: "",
+            rightSphere: "",
+            rightCylinder: "",
+            rightAxial: ""
+          }
+        };
+      } else {
+        this.archivesInfo = JSON.parse(row.healthRecord);
+      }
     },
-    addHandle() {
-      this.isAdd = true
-      this.buttonDisabled = false
-      this.userInfoDialog = true
-      this.editTitle = '用户基础信息'
+    addHandle () {
+      this.isAdd = true;
+      this.buttonDisabled = false;
+      this.userInfoDialog = true;
+      // this.$nextTick(() => {
+      this.$refs.userInfoForm.resetFields();
+      // });
+      this.editTitle = "用户基础信息";
     },
-    delHandle(row) {
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+    delHandle (row) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
-          ApiServer.manager.delUser({ id: row.id }).then((res) => {
+          ApiServer.manager.delUser({ id: row.id }).then(res => {
             if (res.code == 200) {
               this.$message({
-                type: 'success',
-                message: '删除成功!',
-              })
-              this.getTableData()
+                type: "success",
+                message: "删除成功!"
+              });
+              this.getTableData();
             } else {
               this.$message({
-                type: 'info',
-                message: '删除失败，请联系管理员！',
-              })
+                type: "info",
+                message: "删除失败，请联系管理员！"
+              });
             }
-          })
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    cancel(form) {
-      this.userInfoDialog = false
-      this.$refs[form].resetFields()
-    },
-    submitUserInfo(form) {
-      this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
-      console.log(this.userInfoForm)
-      this.buttonDisabled = true
-      // this.$refs.userInfoForm.validate((valid) => {
-      //   if (valid) {
-      var requestAddr = this.isAdd == false ? 'updateUserInfo' : 'saveUser'
-      ApiServer.manager[requestAddr](this.userInfoForm).then((res) => {
-        if (res.code == 200) {
-          this.userInfoDialog = false;
-          if (this.$refs.form !== undefined) { this.$refs.form.resetFields() }
-          this.userInfoForm.roleIds = [];
-          this.getTableData();
-          this.$message({ message: '操作成功', type: 'success' });
-        }
-      })
-      //   }
+    cancel (form) {
+      this.userInfoDialog = false;
+      this.$refs.userInfoForm.resetFields();
+      // this.$nextTick(()=>{
       // })
     },
-    batchDel() {
-      this.DelIdList = []
+    submit () {
+      this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
+      this.$refs.userInfoForm.validate(valid => {
+        if (valid) {
+          this.diolog = 2;
+          this.active = 2;
+        }
+      });
+    },
+    submitUserInfo (form) {
+      this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
+      this.buttonDisabled = true;
+      // this.$refs.userInfoForm.validate((valid) => {
+      //   if (valid) {
+      var requestAddr = this.isAdd == false ? "updateUserInfo" : "saveUser";
+      ApiServer.manager[requestAddr](this.userInfoForm).then(res => {
+        if (res.code == 200) {
+          this.userInfoDialog = false;
+          if (this.$refs.form !== undefined) {
+            // this.$refs.form.resetFields()
+            this.$nextTick(() => {
+              this.$refs[form].resetFields();
+            });
+          }
+          this.userInfoForm.roleIds = [];
+          this.getTableData();
+          this.$message({ message: "操作成功", type: "success" });
+        }
+      });
+      //   }
+      // });
+    },
+    batchDel () {
+      this.DelIdList = [];
       if (this.$refs.multipleTable.selection.length > 0) {
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
+        this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         })
           .then(() => {
-            this.$refs.multipleTable.selection.forEach((item) => {
-              this.DelIdList.push(item.id)
-            })
-            console.log(this.DelIdList)
-            ApiServer.manager.batchDelUser(this.DelIdList).then((res) => {
+            this.$refs.multipleTable.selection.forEach(item => {
+              this.DelIdList.push(item.id);
+            });
+            console.log(this.DelIdList);
+            ApiServer.manager.batchDelUser(this.DelIdList).then(res => {
               if (res.code == 200) {
                 this.$message({
-                  type: 'success',
-                  message: '删除成功!',
-                })
+                  type: "success",
+                  message: "删除成功!"
+                });
               } else {
                 this.$message({
-                  type: 'info',
-                  message: '删除失败，请联系管理员！',
-                })
+                  type: "info",
+                  message: "删除失败，请联系管理员！"
+                });
               }
-            })
+            });
           })
           .catch(() => {
             this.$message({
-              type: 'info',
-              message: '已取消删除',
-            })
-          })
+              type: "info",
+              message: "已取消删除"
+            });
+          });
       }
     },
-    getTableData() {
-      this.loading = true
-      if (this.date != '') {
-        this.queryForm.startDate = this.date[0]
-        this.queryForm.endDate = this.date[1]
+    getTableData () {
+      this.loading = true;
+      if (this.date != "") {
+        this.queryForm.startDate = this.date[0];
+        this.queryForm.endDate = this.date[1];
       }
-      ApiServer.manager.getUserInfoList(this.queryForm).then((res) => {
+      ApiServer.manager.getUserInfoList(this.queryForm).then(res => {
         if (res.code == 200) {
-          this.tableData = res.data.list
-          this.tableTotals = Number(res.data.total)
+          this.tableData = res.data.list;
+          this.tableTotals = Number(res.data.total);
         }
-        this.loading = false
-      })
+        this.loading = false;
+      });
     },
-    getDoctorList() {
+    getDoctorList () {
       var data = {
         pageParams: {
           pageNum: 1,
-          pageSize: 10,
-        },
-      }
-      ApiServer.manager.getDoctorList(data).then((res) => {
-        if (res.code == 200) {
-          this.doctorList = res.data.list
+          pageSize: 10
         }
-        this.loading = false
-      })
-    },
-    addressInfo(row) {
-      this.$alert(row.area, '地址', {
-        center: true,
-        showConfirmButton: false,
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
-    purchaseInfo(row) {
-      this.$router.push({ name: 'visionInfo', params: row })
-    },
-    trainInfo() { },
-    visionInfo() { },
-    purchaseManagement(row) {
-      this.$router.push({ name: 'purchaseManager', params: row })
-    },
-    getNameList() {
-      ApiServer.manager.getHospitalList().then((res) => {
+      };
+      ApiServer.manager.getDoctorList(data).then(res => {
         if (res.code == 200) {
-          this.nameList = res.data.list
+          this.doctorList = res.data.list;
         }
-      })
-    },
-    open() {
-      this.$confirm('确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+        this.loading = false;
       });
+    },
+    addressInfo (row) {
+      this.$alert(row.area, "地址", {
+        center: true,
+        showConfirmButton: false
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    purchaseInfo (row) {
+      this.$router.push({ name: "visionInfo", params: row });
+    },
+    trainInfo () { },
+    visionInfo () { },
+    purchaseManagement (row) {
+      this.$router.push({ name: "purchaseManager", params: row });
+    },
+    getNameList () {
+      ApiServer.manager.getHospitalList().then(res => {
+        if (res.code == 200) {
+          this.nameList = res.data.list;
+        }
+      });
+    },
+    open () {
+      this.$confirm(
+        "确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "开发中!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "开发中"
+          });
+        });
     }
   },
-  mounted() {
-    var date = new Date()
-    this.newYear = date.getFullYear()
-    this.getDoctorList()
+  mounted () {
+    var date = new Date();
+    this.newYear = date.getFullYear();
+    this.getDoctorList();
     //   this.getNameList();
-  },
-}
+  }
+};
 </script>
-
 
 <style scoped>
 .textLink {
@@ -600,7 +668,7 @@ export default {
 .userForm {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   margin: 50px 150px;
 }
 </style>

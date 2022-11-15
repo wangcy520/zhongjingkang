@@ -112,7 +112,7 @@ export default new Router({
                     name: '4',
                     path: '/4',
                     component: () => import( '../views/pages/manager/4'),
-                    meta: { title: '4' },
+                    meta: { title: '疗程详情' },
                     parmas: {}
                 }
                 // {
