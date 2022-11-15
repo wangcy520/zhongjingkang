@@ -40,8 +40,8 @@
               <div class="grid-content bg-purple">*视力</div>
             </el-col>
             <el-col :span="6">
-              <div class="grid-content bg-purple">裸眼视力</div>
-              <div class="grid-content bg-purple">矫正视力</div>
+              <div class="grid-content bg-purple" style="line-height: 32px;">裸眼视力</div>
+              <div class="grid-content bg-purple" style="line-height: 32px;">矫正视力</div>
             </el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">左眼
