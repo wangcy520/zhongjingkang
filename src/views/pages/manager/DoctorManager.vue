@@ -3,7 +3,7 @@
     <el-card>
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
         <el-form-item label="时间周期" prop="date">
-          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至"
+          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
             start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
@@ -377,11 +377,12 @@ export default {
       }
     },
     getTableData () {
-      this.loading = true
+      this.loading = true;
       if (this.date != '') {
-        this.queryForm.startTime = this.date[0]
-        this.queryForm.endTime = this.date[1]
+        this.queryForm.startTime = this.date[0] + ' 00:00:00'
+        this.queryForm.endTime = this.date[1] + ' 23:59:59'
       }
+      console.log(this.queryForm)
       ApiServer.manager.getDoctorList(this.queryForm).then((res) => {
         if (res.code == 200) {
           this.tableData = res.data.list

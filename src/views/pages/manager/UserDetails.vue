@@ -22,7 +22,7 @@
           <div class="grid-content bg-purple">用户编号：{{ item.code }}</div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple">视训师：</div>
+          <div class="grid-content bg-purple">视训师：{{item.doctorName}}</div>
         </el-col>
         <el-col :span="6">
           <div class="grid-content bg-purple">月卡剩余(天)：{{ item.residueDays }}</div>
@@ -120,6 +120,9 @@
       <el-table :header-cell-style="{ background: '#409eff' }" :data="tableData" style="width: 100%" v-loading="loading"
         ref="multipleTable">
         <el-table-column prop="name" label="用户名">
+          <template>
+            <span>{{item.name}}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="purchaseType" label="类型">
           <template slot-scope="scope">
@@ -145,7 +148,7 @@
 
     <el-dialog title="购买信息" :visible.sync="buyModel" width="50%">
       <el-form ref="form" :model="buyForm" label-width="80px" :inline="true" class="userForm" :rules="rules">
-        <el-form-item style="width:100%;margin-left: 80px;" prop="type">
+        <el-form-item style="width:100%;text-align: center;" prop="type">
           <el-radio v-model="buyForm.type" label="0">次卡</el-radio>
           <el-radio v-model="buyForm.type" label="1">月卡</el-radio>
         </el-form-item>
@@ -159,10 +162,10 @@
           <el-date-picker v-model="buyForm.usefulLife" type="date" style="width:300px" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item style="width:100%;margin-left: 25px;">
+        <el-form-item style="width:100%;text-align: center;">
           <span>总购买记录：月卡：{{ item.count }}次 次卡：{{ item.residueCount }}次</span>
         </el-form-item>
-        <el-form-item style="width:100%;margin-left: 25px;">
+        <el-form-item style="width:100%;text-align: center;">
           <span>总剩余次数：月卡：{{ item.days }}次 次卡：{{ item.residueDays }}次</span>
         </el-form-item>
       </el-form>
@@ -307,7 +310,7 @@ export default {
 .userForm {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   margin: 50px 150px;
 }
 

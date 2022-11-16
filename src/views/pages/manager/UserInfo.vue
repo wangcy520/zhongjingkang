@@ -5,10 +5,11 @@
         <el-form-item prop="name" label="用户名">
           <el-input type="text" placeholder="请输入用户名名称" v-model="queryForm.name"></el-input>
         </el-form-item>
-        <el-form-item prop="visualCenter" label="次/月卡">
-          <el-select v-model="queryForm.visualCenter" placeholder="全部/次卡/月卡">
-            <el-option v-for="item in nameList" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
+        <el-form-item prop="type" label="次/月卡">
+          <el-select v-model="queryForm.type" placeholder="请选择全部/次卡/月卡">
+            <el-option label="全部"></el-option>
+            <el-option label="次卡" :value="0"></el-option>
+            <el-option label="月卡" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="name" label="手机号">
@@ -48,7 +49,7 @@
             }}/{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="" width="140" align="center">
+        <el-table-column prop=""  align="center">
           <template slot="header">
             <div>次卡(天)</div>
             <div>全部/已用/剩余</div>
@@ -59,7 +60,7 @@
             }}/{{ scope.row.residueDays }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="days" label="疗程(天)" width="120" align="center">
+        <el-table-column prop="days" label="疗程(天)" align="center">
           <template slot="header">
             <div>疗程(天)</div>
             <div>全部/已用/剩余</div>
@@ -68,7 +69,7 @@
             <span>{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="residueDays" label="疗程(次)" width="120" align="center">
+        <el-table-column prop="residueDays" label="疗程(次)"  align="center">
           <template slot="header">
             <div>疗程(天)</div>
             <div>全部/已用/剩余</div>
@@ -77,7 +78,7 @@
             <span>{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" width="120">
+        <el-table-column prop="type" label="类型" >
           <template slot-scope="scope">
             <span>{{
                 scope.row.type == 0
@@ -90,14 +91,14 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="sex" label="性别" width="120">
+        <el-table-column prop="sex" label="性别" >
           <template slot-scope="scope">
             {{ scope.row.sex == "1" ? "女" : "男" }}
           </template>
         </el-table-column>
-        <el-table-column prop="birthday" label="出生年月" width="120">
+        <el-table-column prop="birthday" label="出生年月" >
         </el-table-column>
-        <el-table-column prop="" label="年龄" width="120">
+        <el-table-column prop="" label="年龄" >
           <template slot-scope="scope">
             <p v-if="scope.row.birthday != null">
               {{ newYear - scope.row.birthday.split("-")[0] }}岁
@@ -105,7 +106,7 @@
             <p v-else></p>
           </template>
         </el-table-column>
-        <el-table-column prop="phone" label="手机" width="140">
+        <el-table-column prop="phone" label="手机" >
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
@@ -372,7 +373,7 @@ export default {
         name: null,
         doctorId: null,
         parentsName: null,
-        visualCenter: null,
+        type: null,
         startDate: "",
         endDate: "",
         pageParams: {
