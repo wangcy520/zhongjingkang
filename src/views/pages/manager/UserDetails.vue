@@ -25,10 +25,10 @@
           <div class="grid-content bg-purple">视训师：</div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple">月卡剩余(天)：</div>
+          <div class="grid-content bg-purple">月卡剩余(天)：{{ item.residueDays }}</div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple">次卡剩余(次)：</div>
+          <div class="grid-content bg-purple">次卡剩余(次)：{{ item.residueCount }}</div>
         </el-col>
       </el-row>
     </el-card>
