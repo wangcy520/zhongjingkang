@@ -15,11 +15,11 @@
       <el-table :data="tableData" v-loading="loading" ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column fixed prop="name" label="姓名" width="100">
+        <el-table-column fixed prop="name" label="姓名">
         </el-table-column>
-        <el-table-column prop="treatmentDays" label="疗程(天)" width="100">
+        <el-table-column prop="treatmentDays" label="疗程(天)">
         </el-table-column>
-        <el-table-column prop="treatmentCount" label="疗程(次)" width="100">
+        <el-table-column prop="treatmentCount" label="疗程(次)">
         </el-table-column>
         <el-table-column prop="daysCount" label="日" width="150">
         </el-table-column>
@@ -105,7 +105,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="cancel('doctorForm')">取 消</el-button>
-          <el-button type="primary" @click="submitDoctorInfo('doctorForm')" :disabled="buttonDisabled">确 定</el-button>
+          <el-button type="primary" @click="submitDoctorInfo('doctorForm')" plain>确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -333,6 +333,7 @@ export default {
           ApiServer.manager[requestAddr](this.doctorForm).then((res) => {
             if (res.code == 200) {
               this.doctorInfoDialog = false
+              this.$message({message:'操作成功',type:'success'})
               this.$refs[form].resetFields()
               this.doctorForm.roleIds = []
               this.getTableData()
