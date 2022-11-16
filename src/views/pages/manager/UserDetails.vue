@@ -10,7 +10,7 @@
           <div class="grid-content bg-purple">性别：{{ item.sex == '0' ? '男' : '女' }}</div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple">年龄： {{ newYear - item.birthday ? item.birthday.split("-")[0] : '0' }}岁
+          <div class="grid-content bg-purple">年龄： {{ newYear - item.birthday.split("-")[0]}}岁
           </div>
         </el-col>
         <el-col :span="6">
@@ -46,22 +46,22 @@
             </el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">左眼
-                <span>{{ userArchives.eyesight ? userArchives.eyesight.leftUcva : '' }}</span>
-                <!-- <el-input v-model="userArchives.eyesight.leftUcva" style="width:50px"></el-input> -->
+                <!-- <span>{{ userArchives.eyesight ? userArchives.eyesight.leftUcva : '' }}</span> -->
+                <el-input disabled v-model="userArchives.eyesight.leftUcva" style="width:50px"></el-input>
               </div>
               <div class="grid-content bg-purple">左眼
-                <span>{{ userArchives.eyesight ? userArchives.eyesight.leftCva : '' }}</span>
-                <!-- <el-input v-model="userArchives.eyesight.leftCva" style="width:50px"></el-input> -->
+                <!-- <span>{{ userArchives.eyesight ? userArchives.eyesight.leftCva : '' }}</span> -->
+                <el-input disabled v-model="userArchives.eyesight.leftCva" style="width:50px"></el-input>
               </div>
             </el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">右眼
-                <span>{{ userArchives.eyesight ? userArchives.eyesight.rightUcva : '' }}</span>
-                <!-- <el-input v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input> -->
+                <!-- <span>{{ userArchives.eyesight ? userArchives.eyesight.rightUcva : '' }}</span> -->
+                <el-input disabled v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input>
               </div>
               <div class="grid-content bg-purple">右眼
-                <span>{{ userArchives.eyesight ? userArchives.eyesight.rightUcva : '' }}</span>
-                <!-- <el-input v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input> -->
+                <!-- <span>{{ userArchives.eyesight ? userArchives.eyesight.rightUcva : '' }}</span> -->
+                <el-input disabled v-model="userArchives.eyesight.rightUcva" style="width:50px"></el-input>
               </div>
             </el-col>
           </el-row>
@@ -80,34 +80,34 @@
               <div class="grid-content bg-purple">球镜
               </div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.leftSphere" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.leftSphere : '' }}</span>
+                <el-input disabled v-model="userArchives.dioptric.leftSphere" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.leftSphere : '' }}</span> -->
               </div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.rightSphere" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.rightSphere : '' }}</span>
+                <el-input  disabled v-model="userArchives.dioptric.rightSphere" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.rightSphere : '' }}</span> -->
               </div>
             </el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">柱镜</div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.leftCylinder" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.leftCylinder : '' }}</span>
+                <el-input disabled v-model="userArchives.dioptric.leftCylinder" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.leftCylinder : '' }}</span> -->
               </div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.rightCylinder" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.rightCylinder : '' }}</span>
+                <el-input disabled v-model="userArchives.dioptric.rightCylinder" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.rightCylinder : '' }}</span> -->
               </div>
             </el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">轴位</div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.leftAxial" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.leftAxial : '' }}</span>
+                <el-input disabled v-model="userArchives.dioptric.leftAxial" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.leftAxial : '' }}</span> -->
               </div>
               <div class="grid-content bg-purple">
-                <!-- <el-input v-model="userArchives.dioptric.rightAxial" style="width:80px"></el-input> -->
-                <span>{{ userArchives.dioptric ? userArchives.dioptric.rightAxial : '' }}</span>
+                <el-input disabled v-model="userArchives.dioptric.rightAxial" style="width:80px"></el-input>
+                <!-- <span>{{ userArchives.dioptric ? userArchives.dioptric.rightAxial : '' }}</span> -->
               </div>
             </el-col>
           </el-row>
