@@ -1,36 +1,27 @@
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
-    <div class="collapse-btn"
-         @click="collapseChage">
-      <i v-if="!collapse"
-         class="el-icon-s-fold"></i>
-      <i v-else
-         class="el-icon-s-unfold"></i>
+    <div class="collapse-btn" @click="collapseChage">
+      <i v-if="!collapse" class="el-icon-s-fold"></i>
+      <i v-else class="el-icon-s-unfold"></i>
     </div>
-    <div class="logo">众晶康用户管理</div>
+    <div class="logo">{{ $store.state.user.title }}</div>
     <div class="header-right">
       <div class="header-user-con">
         <!-- 全屏显示 -->
-        <div class="btn-fullscreen"
-             @click="handleFullScreen">
-          <el-tooltip effect="dark"
-                      :content="fullscreen?`取消全屏`:`全屏`"
-                      placement="bottom">
+        <div class="btn-fullscreen" @click="handleFullScreen">
+          <el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom">
             <i class="el-icon-rank"></i>
           </el-tooltip>
         </div>
         <!-- 消息中心 -->
         <div class="btn-bell">
-          <el-tooltip effect="dark"
-                      :content="message?`有${message}条未读消息`:`消息中心`"
-                      placement="bottom">
+          <el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
             <router-link to="/tabs">
               <i class="el-icon-bell"></i>
             </router-link>
           </el-tooltip>
-          <span class="btn-bell-badge"
-                v-if="message"></span>
+          <span class="btn-bell-badge" v-if="message"></span>
         </div>
         <!-- 用户头像 -->
         <div class="user-avator">
@@ -38,51 +29,32 @@
           <i class="el-icon-user"></i>
         </div>
         <!-- 用户名下拉菜单 -->
-        <el-dropdown class="user-name"
-                     trigger="click"
-                     @command="handleCommand">
+        <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            {{username}}
+            {{ username }}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item divided
-                              command="loginout">退出登录</el-dropdown-item>
-            <el-dropdown-item divided
-                              command="changePwd">修改密码</el-dropdown-item>
+            <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+            <el-dropdown-item divided command="changePwd">修改密码</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div>
-        <el-dialog title="修改用户密码"
-                   :visible.sync="changePwdDialog"
-                   @close="cancel('changePwdForm')">
-          <el-form class="user-account-key"
-                   ref="changePwdForm"
-                   :model="changePwdForm"
-                   :rules="changePwdRules"
-                   label-width="100px">
-            <el-form-item label="原密码"
-                          prop="oldPassword">
-              <el-input type="password"
-                        placeholder="请输入原密码"
-                        v-model="changePwdForm.oldPassword"></el-input>
+        <el-dialog title="修改用户密码" :visible.sync="changePwdDialog" @close="cancel('changePwdForm')">
+          <el-form class="user-account-key" ref="changePwdForm" :model="changePwdForm" :rules="changePwdRules"
+            label-width="100px">
+            <el-form-item label="原密码" prop="oldPassword">
+              <el-input type="password" placeholder="请输入原密码" v-model="changePwdForm.oldPassword"></el-input>
             </el-form-item>
-            <el-form-item label="新密码"
-                          prop="newPassword">
-              <el-input type="password"
-                        placeholder="请设置新密码"
-                        v-model="changePwdForm.newPassword"></el-input>
+            <el-form-item label="新密码" prop="newPassword">
+              <el-input type="password" placeholder="请设置新密码" v-model="changePwdForm.newPassword"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码"
-                          prop="qrpassword">
-              <el-input type="password"
-                        placeholder="请确认新密码"
-                        v-model="changePwdForm.qrpassword"></el-input>
+            <el-form-item label="确认密码" prop="qrpassword">
+              <el-input type="password" placeholder="请确认新密码" v-model="changePwdForm.qrpassword"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary"
-                         @click="onSubmit('changePwdForm')">修改</el-button>
+              <el-button type="primary" @click="onSubmit('changePwdForm')">修改</el-button>
               <el-button @click="$refs['changePwdForm'].resetFields()">重置</el-button>
             </el-form-item>
           </el-form>
@@ -97,7 +69,7 @@ import ApiServer from '@/api/apiServer'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 export default {
-  data() {
+  data () {
     let validateNewPassword = (rule, value, callback) => {
       if (value === this.changePwdForm.oldPassword) {
         callback(new Error('新密码不能与原密码相同!'))
@@ -161,13 +133,13 @@ export default {
     ...mapGetters({
       userName: 'name',
     }),
-    username() {
+    username () {
       let username = localStorage.getItem('ms_username')
       return username ? username : this.userName
     },
   },
   methods: {
-    onSubmit(changePwdForm) {
+    onSubmit (changePwdForm) {
       this.$refs.changePwdForm.validate((valid) => {
         if (valid) {
           ApiServer.manager.changePwd(this.changePwdForm).then((res) => {
@@ -180,7 +152,7 @@ export default {
       })
     },
     // 用户名下拉菜单选择事件
-    handleCommand(command) {
+    handleCommand (command) {
       if (command == 'loginout') {
         // localStorage.removeItem('ms_username')
         removeToken()
@@ -192,12 +164,12 @@ export default {
       }
     },
     // 侧边栏折叠
-    collapseChage() {
+    collapseChage () {
       this.collapse = !this.collapse
       bus.$emit('collapse', this.collapse)
     },
     // 全屏事件
-    handleFullScreen() {
+    handleFullScreen () {
       let element = document.documentElement
       if (this.fullscreen) {
         if (document.exitFullscreen) {
@@ -224,7 +196,7 @@ export default {
       this.fullscreen = !this.fullscreen
     },
   },
-  mounted() {
+  mounted () {
     if (document.body.clientWidth < 1500) {
       this.collapseChage()
     }
@@ -240,31 +212,37 @@ export default {
   font-size: 22px;
   color: #409eff;
 }
+
 .collapse-btn {
   float: left;
   padding: 0 21px;
   cursor: pointer;
   line-height: 70px;
 }
+
 .header .logo {
   float: left;
   width: 250px;
   line-height: 70px;
 }
+
 .header-right {
   float: right;
   padding-right: 50px;
 }
+
 .header-user-con {
   display: flex;
   height: 70px;
   align-items: center;
 }
+
 .btn-fullscreen {
   transform: rotate(45deg);
   margin-right: 5px;
   font-size: 24px;
 }
+
 .btn-bell,
 .btn-fullscreen {
   position: relative;
@@ -274,6 +252,7 @@ export default {
   border-radius: 15px;
   cursor: pointer;
 }
+
 .btn-bell-badge {
   position: absolute;
   right: 0;
@@ -284,25 +263,31 @@ export default {
   background: #f56c6c;
   color: #409eff;
 }
+
 .btn-bell .el-icon-bell {
   color: #409eff;
 }
+
 .user-name {
   margin-left: 10px;
 }
+
 .user-avator {
   margin-left: 20px;
 }
+
 .user-avator img {
   display: block;
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
+
 .el-dropdown-link {
   color: #409eff;
   cursor: pointer;
 }
+
 .el-dropdown-menu__item {
   text-align: center;
 }

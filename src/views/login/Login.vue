@@ -1,7 +1,6 @@
 <template>
   <div class="login-wrap">
-    <el-card class="ms-login"
-             :body-style="{padding : '0px' }">
+    <el-card class="ms-login" :body-style="{ padding: '0px' }">
       <el-row>
         <el-col :span="12">
           <div class="login-left"></div>
@@ -10,56 +9,37 @@
           <p class="ms-title">账号密码登录</p>
           <div style="text-align: center;margin-top: 30px">
             <div style="font-size: 8px">账号类型&nbsp;&nbsp;&nbsp;&nbsp;
-              <el-radio v-model="type"
-                        label="1">视光中心</el-radio>
-              <el-radio v-model="type"
-                        label="2">众晶康</el-radio>
+              <el-radio v-model="type" label="1">视光中心</el-radio>
+              <el-radio v-model="type" label="2">众晶康</el-radio>
             </div>
           </div>
-          <el-form :model="loginForm"
-                   :rules="rules"
-                   ref="login"
-                   label-width="0px"
-                   class="ms-content">
+          <el-form :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username"
-                        placeholder="username">
+              <el-input v-model="loginForm.username" placeholder="username">
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input type="password"
-                        placeholder="password"
-                        v-model="loginForm.password"
-                        @keyup.enter.native="submitForm()">
+              <el-input type="password" placeholder="password" v-model="loginForm.password"
+                @keyup.enter.native="submitForm()">
                 <template slot="prepend">
                   <i class="el-icon-lock"></i>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item>
-              <el-input v-model="loginForm.code"
-                        placeholder="验证码"
-                        prefix-icon="lj-icon-yanzhengma"
-                        autocomplete="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                        maxlength="4"
-                        @keyup.enter.native="submitForm"
-                        style="float: left; width: 122px;"></el-input>
+              <el-input v-model="loginForm.code" placeholder="验证码" prefix-icon="lj-icon-yanzhengma" autocomplete="off"
+                autocapitalize="off" spellcheck="false" maxlength="4" @keyup.enter.native="submitForm"
+                style="float: left; width: 122px;"></el-input>
               <div class="captcha_code">
-                <img :src="captchaImg"
-                     ref="code"
-                     @click="getCaptchaInit()"
-                     style="margin-left: 65px;width: 100px">
+                <img :src="captchaImg" ref="code" @click="getCaptchaInit()" style="margin-left: 65px;width: 100px">
               </div>
               <el-checkbox v-model="checked">记住密码</el-checkbox>
             </el-form-item>
             <div class="login-btn">
-              <el-button type="primary"
-                         @click="submitForm()">登录</el-button>
+              <el-button type="primary" @click="submitForm()">登录</el-button>
             </div>
           </el-form>
         </el-col>
@@ -73,11 +53,11 @@ import ApiServer from '@/api/apiServer'
 import CryptoJS from 'crypto-js'
 export default {
   name: 'login',
-  data() {
+  data () {
     return {
       key: 'aaaaaa',
       checked: false,
-      title: '众晶康用户管理',
+      title: this.$store.state.user.title,
       captchaImg: '',
       type: '1',
       loginForm: {
@@ -96,7 +76,7 @@ export default {
     }
   },
   methods: {
-    setCookie(c_name, c_pwd, exdate) {
+    setCookie (c_name, c_pwd, exdate) {
       console.log('setCookie')
       var exdate = new Date()
       console.log(c_name, c_pwd)
@@ -106,7 +86,7 @@ export default {
       document.cookie =
         'password=' + c_pwd + ';path=/;expires=' + exdate.toGMTString()
     },
-    getCookie() {
+    getCookie () {
       if (document.cookie.length > 0) {
         this.checked = true
         var arr = document.cookie.split(';')
@@ -125,10 +105,10 @@ export default {
         }
       }
     },
-    clearCookie() {
+    clearCookie () {
       this.setCookie('', '', -1)
     },
-    submitForm() {
+    submitForm () {
       this.$refs.login.validate((valid) => {
         if (valid) {
           this.checkedPwd(this.loginForm.username, this.loginForm.password)
@@ -138,19 +118,19 @@ export default {
               this.$router.push({ path: this.redirect || '/' })
               this.$message.success('进入成功')
             })
-            .catch(() => {})
+            .catch(() => { })
         } else {
           this.$message.error('请输入账号和密码')
         }
       })
     },
-    getCaptchaInit() {
+    getCaptchaInit () {
       ApiServer.common.captchaInit().then((res) => {
         this.loginForm.captchaId = res.message
         this.captchaImg = res.data
       })
     },
-    checkedPwd(username, pwd) {
+    checkedPwd (username, pwd) {
       console.log('进入', this.checked)
       if (this.checked) {
         let base64Pwd = Base64.encode(pwd)
@@ -161,10 +141,10 @@ export default {
       }
     },
   },
-  mounted() {
+  mounted () {
     this.getCookie()
   },
-  created() {
+  created () {
     this.getCaptchaInit()
   },
 }
@@ -178,6 +158,7 @@ export default {
   /* background-image: url(../../assets/img/login-bg.jpg); */
   background-size: 100%;
 }
+
 .login-left {
   position: relative;
   background-color: rgb(247, 242, 242);
@@ -193,6 +174,7 @@ export default {
   color: #409eff;
   border-bottom: 1px solid #ddd;
 }
+
 .ms-login {
   position: absolute;
   left: 50%;
@@ -205,22 +187,27 @@ export default {
   /* background: #ddd; */
   overflow: hidden;
 }
+
 .ms-content {
   padding: 30px 30px;
 }
+
 .login-btn {
   text-align: center;
 }
+
 .login-btn button {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
 }
+
 .login-tips {
   font-size: 12px;
   line-height: 30px;
   color: #fff;
 }
+
 .el-input__inner {
   height: 36px !important;
 }

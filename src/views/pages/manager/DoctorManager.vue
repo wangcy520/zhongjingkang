@@ -3,8 +3,8 @@
     <el-card>
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
         <el-form-item label="时间周期" prop="date">
-          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至"
+            start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
@@ -12,7 +12,7 @@
       </el-form>
     </el-card>
     <el-card style="">
-      <el-table :data="tableData" style="width: 100%" v-loading="loading" ref="multipleTable">
+      <el-table :data="tableData" v-loading="loading" ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column fixed prop="name" label="姓名" width="100">
@@ -47,6 +47,7 @@
             <!-- <el-button @click="delHandle(scope.row)" type="primary" plain size="small" icon="el-icon-delete">用户
             </el-button> -->
             <el-button @click="toDetails(scope.row)" type="primary" plain size="small">订单</el-button>
+            <el-button @click="toUserInfo(scope.row)" type="primary" plain size="small">用户</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,8 +60,8 @@
     </el-card>
     <div>
       <el-dialog :title="this.editTitle" :visible.sync="doctorInfoDialog" @close="cancel('doctorForm')" width="900px">
-        <el-form ref="doctorForm" :model="doctorForm" :rules="rules" label-width="150px" style="margin-right: 50px;"
-          :inline="true">
+        <el-form ref="doctorForm" :model="doctorForm" :rules="rules" label-width="120px" style="margin-right: 50px;"
+          label-position="left" :inline="true" class="userForm">
           <el-form-item label="类型" prop="type">
             <el-input type="text" value="视训师" disabled style="width=250px"></el-input>
             </el-select>
@@ -70,10 +71,11 @@
             </el-input>
           </el-form-item>
           <el-form-item label="医生姓名" prop="name">
-            <el-input  type="text" placeholder="请输入医生姓名" v-model="doctorForm.name" style="width=250px"></el-input>
+            <el-input type="text" placeholder="请输入医生姓名" v-model="doctorForm.name" style="width=250px"></el-input>
           </el-form-item>
           <el-form-item label="视训师编码" prop="code">
-            <el-input disabled type="text" placeholder="请输入视训师编码" v-model="doctorForm.code" style="width=250px"></el-input>
+            <el-input disabled type="text" placeholder="请输入视训师编码" v-model="doctorForm.code" style="width=250px">
+            </el-input>
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
             <el-input type="text" placeholder="请输入手机号" v-model="doctorForm.phone" style="width=250px"></el-input>
@@ -113,7 +115,7 @@
 import ApiServer from '@/api/apiServer'
 import { getToken } from '@/utils/auth'
 export default {
-  data() {
+  data () {
     return {
       buttonDisabled: false,
       loading: false,
@@ -144,13 +146,13 @@ export default {
       date: '',
       queryForm: {
         startTime: '',
-        endTime:'',
+        endTime: '',
         pageParams: {
           pageNum: 1,
           pageSize: 10,
         },
       },
-      durationCount:'',
+      durationCount: '',
       doctorForm: {
         name: '',
         code: '',
@@ -181,25 +183,25 @@ export default {
     }
   },
   components: {},
-  created() {
+  created () {
     this.getTableData()
     this.getHospitalList()
   },
   methods: {
-    getHospitalList() {
+    getHospitalList () {
       ApiServer.manager.getHospitalList(this.queryForm).then((res) => {
         if (res.code == 200) {
           this.hospitalList = res.data.list
         }
       })
     },
-    handleRemove(file, fileList) {
+    handleRemove (file, fileList) {
       this.appForm.imageId = ''
     },
-    handleChange() {
+    handleChange () {
       console.log('handleChange')
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
       this.queryForm.pageSize = val
       //   let pageMax = Math.ceil(this.tableTotals / val)
@@ -208,12 +210,12 @@ export default {
       console.log(this.date)
       this.getTableData()
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.queryForm.pageParams.pageNum = val
       this.getTableData()
     },
-    enableHandle(row) {
+    enableHandle (row) {
       this.$confirm(
         row.status == '1' ? '确定要停用？' : '确认要启用？',
         '提示',
@@ -241,13 +243,13 @@ export default {
           })
         })
     },
-    editHandle(row) {
+    editHandle (row) {
       console.log(row)
       this.isAdd = false
       this.buttonDisabled = false
       this.doctorInfoDialog = true
       row.status = Number(row.status)
-      this.editTitle = '编辑医生'
+      this.editTitle = '视训师信息'
       row.status = Number(row.status)
       this.doctorForm.simpleCode = 'KE-1'
       this.doctorForm.code = 'SGZX-KE-0001'
@@ -263,20 +265,20 @@ export default {
         this.doctorForm.id = row.id
       })
     },
-    addHandle() {
+    addHandle () {
       this.isAdd = true
       this.buttonDisabled = false
       this.doctorInfoDialog = true
-      this.editTitle = '新增医生'
-      this.doctorForm.simpleCode = '系统生成中'
-      this.doctorForm.code = '系统生成中'
+      this.editTitle = '视训师信息'
+      this.doctorForm.simpleCode = '自动生成'
+      this.doctorForm.code = '自动生成'
       ApiServer.select.selectRoleList().then((res) => {
         if (res.code == 200) {
           this.roleList = res.data
         }
       })
     },
-    delHandle(row) {
+    delHandle (row) {
       this.$confirm('此操作将永久删除该医生, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -305,17 +307,23 @@ export default {
           })
         })
     },
-    toDetails(row) {
+    toDetails (row) {
       let query = {
         doctorId: row.id
       }
       this.$router.push({ name: '3', query: query })
     },
-    cancel(form) {
+    toUserInfo (row) {
+      let query = {
+        doctorId: row.id
+      }
+      this.$router.push({ name: 'userInfo', query: query })
+    },
+    cancel (form) {
       this.$refs[form].resetFields()
       this.doctorInfoDialog = false
     },
-    submitDoctorInfo(form) {
+    submitDoctorInfo (form) {
       this.doctorForm.age = Number(this.doctorForm.age)
       this.buttonDisabled = true
       this.$refs.doctorForm.validate((valid) => {
@@ -333,7 +341,7 @@ export default {
         }
       })
     },
-    batchDel() {
+    batchDel () {
       this.DelIdList = []
       if (this.$refs.multipleTable.selection.length > 0) {
         this.$confirm('此操作将永久删除该医生, 是否继续?', '提示', {
@@ -368,7 +376,7 @@ export default {
           })
       }
     },
-    getTableData() {
+    getTableData () {
       this.loading = true
       if (this.date != '') {
         this.queryForm.startTime = this.date[0]
@@ -382,19 +390,35 @@ export default {
         this.loading = false
       })
     },
-    handleAvatarSuccess(res, file) {
+    handleAvatarSuccess (res, file) {
       this.doctorForm.documentId = res.data.id
     },
   },
-  mounted() { },
+  mounted () { },
 }
 </script>
 
 <style scoped>
-/deep/ .el-form-item__label{
+/deep/ .el-dialog {
+  border-radius: 10px;
+}
+
+/deep/ .el-dialog__title {
+  font-weight: 600;
+}
+
+/deep/ .el-form-item__label {
   color: #000000;
 }
-/deep/ .el-dialog__header{
+
+/deep/ .el-dialog__header {
   text-align: center;
+}
+
+.userForm {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 50px;
 }
 </style>

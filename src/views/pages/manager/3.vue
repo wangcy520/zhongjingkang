@@ -1,63 +1,55 @@
 <template>
   <div>
     <el-card>
-      <el-form :inline="true"
-               :model="queryForm"
-               class="demo-form-inline">
-        <el-form-item prop="businessMode"
-                      label="用户名">
-                      <el-input v-model="queryForm.patientName"></el-input>
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
+        <el-form-item prop="businessMode" label="用户名">
+          <el-input v-model="queryForm.patientName"></el-input>
         </el-form-item>
-        <el-form-item prop="businessMode"
-                      label="订单号">
-                      <el-input  v-model="queryForm.orderCode"></el-input>
+        <el-form-item prop="businessMode" label="订单号">
+          <el-input v-model="queryForm.orderCode"></el-input>
         </el-form-item>
-        <el-form-item prop="leaseTime"
-                      label="下单时间">
-          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-form-item prop="leaseTime" label="下单时间">
+          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至"
+            start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-        <el-button @click="getTableData()"
-                   icon="el-icon-search"
-                   style="color: #409EFF"
-                   round>查询</el-button>
+        <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
       </el-form>
 
-      <el-table :data="tableData"
-                v-loading="loading"
-                ref="multipleTable">
+      <el-table :data="tableData" v-loading="loading" ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column prop="orderCode"
-                         label="订单号/(总疗程)">
+        <el-table-column prop="orderCode" label="订单号/(总疗程)">
         </el-table-column>
-        <el-table-column prop=""
-                         label="用户名">
-          <template slot-scope="scope">{{scope.row.patient.name}}</template>
+        <el-table-column prop="" label="用户名">
+          <template slot-scope="scope">{{ scope.row.patient.name }}</template>
         </el-table-column>
-        <el-table-column prop="patient.type"
-                         label="用户类型">
-          <template slot-scope="scope">{{scope.row.patient.type == 0 ? '近视' :scope.row.patient.type == 1 ? '弱视' : '斜视'}}</template>
+        <el-table-column prop="patient.type" label="用户类型">
+          <template slot-scope="scope">{{ scope.row.patient.type == 0 ? '近视' : scope.row.patient.type == 1 ? '弱视'
+              : scope.row.type == 2
+                ? "弱视"
+                : ''
+          }}</template>
         </el-table-column>
-        <el-table-column prop=""
-                         label="疗程周期">
-          <template slot-scope="scope">{{scope.row.treatmentDays ? scope.row.treatmentDays : scope.row.treatmentCount}}</template>
+        <el-table-column prop="" label="疗程周期">
+          <template slot-scope="scope">{{ scope.row.treatmentDays ? scope.row.treatmentDays :
+              scope.row.treatmentCount
+          }}</template>
         </el-table-column>
-        <el-table-column prop="residueDays"
-                         label="月卡剩余数量(天)">
-                         <template slot-scope="scope">{{scope.row.residueDays == null ? '0' : scope.row.residueDays}}</template>
+        <el-table-column prop="residueDays" label="月卡剩余数量(天)">
+          <template slot-scope="scope">{{ scope.row.residueDays == null ? '0' : scope.row.residueDays }}</template>
         </el-table-column>
-        <el-table-column prop="residueCount"
-                         label="次卡剩余数量(次)">
-                         <template slot-scope="scope">{{scope.row.residueCount == null ? '0' : scope.row.residueCount}}</template>
+        <el-table-column prop="residueCount" label="次卡剩余数量(次)">
+          <template slot-scope="scope">{{ scope.row.residueCount == null ? '0' : scope.row.residueCount }}</template>
         </el-table-column>
-        <el-table-column prop="currentNum"
-                         label="单疗程阶段">
-            <template slot-scope="scope">{{scope.row.currentNum == null ? '0' : scope.row.currentNum}}/{{scope.row.treatmentDays ? scope.row.treatmentDays : scope.row.treatmentCount}}</template>
+        <el-table-column prop="currentNum" label="单疗程阶段">
+          <template slot-scope="scope">{{ scope.row.currentNum == null ? '0' :
+              scope.row.currentNum
+          }}/{{ scope.row.treatmentDays ? scope.row.treatmentDays :
+    scope.row.treatmentCount
+}}</template>
         </el-table-column>
-        <el-table-column prop="orderTime"
-                         label="下单时间(订单号)">
+        <el-table-column prop="orderTime" label="下单时间(订单号)">
         </el-table-column>
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -67,13 +59,9 @@
         </el-table-column>
       </el-table>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="queryForm.pageNum"
-                       :page-sizes="[10, 50, 100, 200]"
-                       :page-size="queryForm.pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="tableTotals">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="queryForm.pageNum" :page-sizes="[10, 50, 100, 200]" :page-size="queryForm.pageSize"
+          layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
         </el-pagination>
       </div>
     </el-card>
@@ -82,21 +70,21 @@
 <script>
 import ApiServer from '@/api/apiServer'
 export default {
-  data() {
+  data () {
     return {
-      doctorId:'',
+      doctorId: '',
       queryForm: {
-        patientName:'',
-        orderCode:'',
-        startTime:'',
-        endTime:'',
+        patientName: '',
+        orderCode: '',
+        startTime: '',
+        endTime: '',
         pageParams: {
           pageNum: 1,
           pageSize: 10,
         },
-        doctorId:this.$route.query.doctorId
+        doctorId: this.$route.query.doctorId
       },
-      date:'',
+      date: '',
       tableTotals: 1,
       tableData: [],
       loading: false,
@@ -137,18 +125,18 @@ export default {
     }
   },
   components: {},
-  created() {},
+  created () { },
   methods: {
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.queryForm.pageParams.pageNum = val;
       this.getTableData()
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.queryForm.pageSize = val
       if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return
       this.getTableData()
     },
-    getTableData() {
+    getTableData () {
       if (this.date != '') {
         this.queryForm.startTime = this.date[0]
         this.queryForm.endTime = this.date[1]
@@ -162,19 +150,19 @@ export default {
         }
       })
     },
-    toTreatment(row){
+    toTreatment (row) {
       let query = {
-        orderId:row.id,
-        orderCode:row.orderCode,
-        item:row
+        orderId: row.id,
+        orderCode: row.orderCode,
+        item: row
       }
       this.$router.push({
-        name:'4',
-        query:query
+        name: '4',
+        query: query
       })
     }
   },
-  mounted() {
+  mounted () {
     // this.doctorId = this.$route.query.doctorId
     this.getTableData()
   },
@@ -183,7 +171,7 @@ export default {
 
 
 <style scoped>
-.form{
+.form {
   margin: 0 150px;
 }
 </style>

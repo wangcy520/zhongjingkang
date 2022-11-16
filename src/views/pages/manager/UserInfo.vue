@@ -15,15 +15,15 @@
           <el-input type="text" placeholder="请输入手机号码" v-model="queryForm.name"></el-input>
         </el-form-item>
         <el-form-item prop="status" label="患者类型">
-          <el-select v-model="queryForm.status" placeholder="全部/近视/弱视/斜视">
+          <el-select v-model="queryForm.status" placeholder="请选择患者类型">
             <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="status" label="即将到期">
-          <el-select v-model="queryForm.status" placeholder="全部/全部次卡/全部月卡/全部疗程/会员卡">
-            <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
-            </el-option>
+          <el-select v-model="queryForm.status" placeholder="">
+            <!-- <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
+            </el-option> -->
           </el-select>
         </el-form-item>
         <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
@@ -84,7 +84,9 @@
                   ? "近视"
                   : scope.row.type == 1
                     ? "弱视"
-                    : "斜视"
+                    : scope.row.type == 2
+                      ? "弱视"
+                      : ''
             }}</span>
           </template>
         </el-table-column>
@@ -98,7 +100,7 @@
         <el-table-column prop="" label="年龄" width="120">
           <template slot-scope="scope">
             <p v-if="scope.row.birthday != null">
-              {{ newYear - scope.row.birthday.split("-")[0] + 1 }}岁
+              {{ newYear - scope.row.birthday.split("-")[0] }}岁
             </p>
             <p v-else></p>
           </template>
@@ -107,9 +109,13 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
-            <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button>
-            <el-button @click="edit(scope.row)" type="primary" size="small" plain>编辑</el-button>
-            <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-edit" plain>档案
+            <!-- <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button> -->
+            <el-button @click="open(scope.row)" type="warning" plain size="small"
+              :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{ scope.row.status == 1 ?
+                  '关闭' : '启用'
+              }}</el-button>
+            <el-button @click="edit(scope.row)" type="primary" size="small" icon="el-icon-edit" plain>编辑</el-button>
+            <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-s-order" plain>档案
             </el-button>
           </template>
         </el-table-column>
@@ -122,18 +128,18 @@
       </div>
     </el-card>
     <div>
-      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel()">
+      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel('userInfoForm')">
         <el-steps :active="active" :space="300" align-center style="display: flex;justify-content: center;">
           <el-step title="基础信息" icon="el-icon-success"></el-step>
           <el-step title="健康档案"></el-step>
         </el-steps>
-        <el-form :model="userInfoForm" ref="userInfoForm" label-width="150px" :inline="true" class="userForm"
-          style="margin: 50px;" v-if="diolog == 1" :rules="userRules">
+        <el-form :model="userInfoForm" ref="userInfoForm" label-width="120px" :inline="true" class="userForm"
+          label-position="left" style="margin: 50px;" v-if="diolog == 1" :rules="userRules">
           <el-form-item label="用户名" prop="name">
             <el-input style="width:100%" v-model="userInfoForm.name"></el-input>
           </el-form-item>
           <el-form-item label="用户编号" prop="code">
-            <el-input style="width:100%" v-model="userInfoForm.code"></el-input>
+            <el-input style="width:100%" disabled v-model="userInfoForm.code"></el-input>
           </el-form-item>
           <el-form-item label="出生年月" prop="birthday">
             <!-- <el-input style="width:100%" v-model="userInfoForm.birthday"></el-input> -->
@@ -162,8 +168,11 @@
           <el-form-item label="关系" prop="relation">
             <el-input style="width:100%" v-model="userInfoForm.relation"></el-input>
           </el-form-item>
-          <el-form-item label="状态" prop="state">
-            <el-input style="width:100%" v-model="userInfoForm.state"></el-input>
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="userInfoForm.status" placeholder="请选择" style="width:200px">
+              <el-option label="禁用" :value="0"></el-option>
+              <el-option label="启用" :value="1"></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <el-form style="margin: 50px;" v-if="diolog == 2">
@@ -252,11 +261,11 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="cancel('userInfoForm')">取 消</el-button>
-          <el-button type="primary" @click="submit" v-if="diolog == 1" plain>确 定</el-button>
+          <el-button type="primary" @click="submit" v-if="diolog == 1" plain>下一步</el-button>
           <el-button type="primary" @click="(diolog = 1), (active = 1)" v-if="diolog == 2" plain>上一步</el-button>
           <el-button type="primary" @click="submitUserInfo('userInfoForm')" :disabled="buttonDisabled" plain
             v-if="diolog == 2">
-            确 定</el-button>
+            提交</el-button>
         </span>
       </el-dialog>
     </div>
@@ -273,16 +282,16 @@ export default {
       nameList: [],
       statusList: [
         {
-          name: "全部",
-          id: null
+          name: "近视",
+          code: 0
         },
         {
-          name: "正常运行",
-          code: "0"
+          name: "弱视",
+          code: 1
         },
         {
-          name: "设备故障",
-          code: "1"
+          name: "斜视",
+          code: 2
         }
       ],
       cardTypeList: [
@@ -305,7 +314,7 @@ export default {
         parentsName: "",
         relation: "",
         idCard: "",
-        state: ""
+        status: ""
       },
       archivesInfo: {
         eyesight: {
@@ -344,12 +353,11 @@ export default {
         phone: [
           {
             required: true,
-            message: "请输入电话号码",
+            message: "手机号格式错误",
             validator: this.commonJS.checkPhone,
             trigger: "blur"
           }
         ],
-        code: [{ required: true, message: "请输入编号", trigger: "blur" }],
         sex: [{ required: true, message: "请输入性别", trigger: "blur" }]
       },
       doctorList: [],
@@ -377,6 +385,7 @@ export default {
   },
   components: {},
   created () {
+    this.queryForm.doctorId = this.$route.query.doctorId
     this.getTableData();
   },
   methods: {
@@ -394,20 +403,13 @@ export default {
       this.getTableData();
     },
     editHandle (row) {
-      // this.isAdd = false
-      // this.buttonDisabled = false
-      // this.userInfoDialog = true
-      // row.status = Number(row.status)
-      // this.editTitle = '编辑用户'
-      // this.$nextTick(() => {
-      //   this.userInfoForm = JSON.parse(JSON.stringify(row))
-      // })
       let obj = { ...row };
       console.log(obj);
       this.$router.push({ name: "userDetails", query: obj });
     },
     edit (row) {
       console.log(row);
+      this.diolog = 1;
       this.editTitle = "编辑基础信息";
       this.isAdd = false;
       this.buttonDisabled = false;
@@ -421,7 +423,7 @@ export default {
       this.userInfoForm.parentsName = row.parentsName;
       this.userInfoForm.relation = row.relation;
       this.userInfoForm.idCard = row.idCard;
-      this.userInfoForm.state = row.state;
+      this.userInfoForm.status = Number(row.status);
       this.userInfoForm.sex = Number(row.sex);
       this.userInfoForm.id = row.id;
       if (!row.healthRecord) {
@@ -449,9 +451,34 @@ export default {
       this.isAdd = true;
       this.buttonDisabled = false;
       this.userInfoDialog = true;
-      // this.$nextTick(() => {
-      this.$refs.userInfoForm.resetFields();
-      // });
+      this.userInfoForm = {
+        name: "",
+        code: "自动生成",
+        birthday: "",
+        sex: "",
+        area: "",
+        phone: "",
+        parentsName: "",
+        relation: "",
+        idCard: "",
+        status: ""
+      };
+      this.archivesInfo = {
+        eyesight: {
+          leftUcva: "",
+          leftCva: "",
+          rightUcva: "",
+          rightCva: ""
+        },
+        dioptric: {
+          leftSphere: "",
+          leftCylinder: "",
+          leftAxial: "",
+          rightSphere: "",
+          rightCylinder: "",
+          rightAxial: ""
+        }
+      };
       this.editTitle = "用户基础信息";
     },
     delHandle (row) {
@@ -484,10 +511,8 @@ export default {
         });
     },
     cancel (form) {
-      this.userInfoDialog = false;
-      this.$refs.userInfoForm.resetFields();
-      // this.$nextTick(()=>{
-      // })
+      // this.$refs[form].resetFields()
+      this.userInfoDialog = false
     },
     submit () {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
@@ -501,14 +526,11 @@ export default {
     submitUserInfo (form) {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
       this.buttonDisabled = true;
-      // this.$refs.userInfoForm.validate((valid) => {
-      //   if (valid) {
-      var requestAddr = this.isAdd == false ? "updateUserInfo" : "saveUser";
+      var requestAddr = this.isAdd == false ? "postModify" : "saveUser";
       ApiServer.manager[requestAddr](this.userInfoForm).then(res => {
         if (res.code == 200) {
           this.userInfoDialog = false;
           if (this.$refs.form !== undefined) {
-            // this.$refs.form.resetFields()
             this.$nextTick(() => {
               this.$refs[form].resetFields();
             });
@@ -518,8 +540,6 @@ export default {
           this.$message({ message: "操作成功", type: "success" });
         }
       });
-      //   }
-      // });
     },
     batchDel () {
       this.DelIdList = [];
@@ -570,20 +590,6 @@ export default {
         this.loading = false;
       });
     },
-    getDoctorList () {
-      var data = {
-        pageParams: {
-          pageNum: 1,
-          pageSize: 10
-        }
-      };
-      ApiServer.manager.getDoctorList(data).then(res => {
-        if (res.code == 200) {
-          this.doctorList = res.data.list;
-        }
-        this.loading = false;
-      });
-    },
     addressInfo (row) {
       this.$alert(row.area, "地址", {
         center: true,
@@ -607,34 +613,34 @@ export default {
         }
       });
     },
-    open () {
+    open (row) {
+      let status = row.status == 1 ? '启用' : '禁用';
+      let params = {
+        status: row.status == 1 ? 2 : 1,
+        id: row.id
+      }
       this.$confirm(
-        "确定禁用吗？禁用后该用户的信息将被锁定,指定授权人员可再次启用",
+        `确定${status}吗？`,
         "提示",
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }
-      )
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "开发中!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "开发中"
-          });
+      ).then(() => {
+        ApiServer.manager.postModify(params).then(res => {
+          if (res.code == 200) {
+            this.getTableData();
+            this.$message({ message: "操作成功", type: "success" });
+          }
         });
+      })
     }
   },
   mounted () {
     var date = new Date();
     this.newYear = date.getFullYear();
-    this.getDoctorList();
+    console.log(this.newYear)
     //   this.getNameList();
   }
 };
@@ -652,6 +658,14 @@ export default {
 
 /deep/ .el-dialog__header {
   text-align: center;
+}
+
+/deep/ .el-dialog {
+  border-radius: 10px;
+}
+
+/deep/ .el-dialog__title {
+  font-weight: 600;
 }
 
 .title {

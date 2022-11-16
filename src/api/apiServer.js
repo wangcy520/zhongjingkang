@@ -175,6 +175,9 @@ class ApiService {
                 buyTimes:function(params){
                     return request.post1(API.MANAGER.buyTimes, params);
                 },
+                postModify:function(params){
+                  return request.post1(API.MANAGER.postModify, params);
+              },
             }
     }
 }

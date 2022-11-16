@@ -1,10 +1,15 @@
 import ApiServer from '@/api/apiServer'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
     name: '',
+    title: '',
     avatar: '',
     roles: [],
     permissions: [],
@@ -18,6 +23,9 @@ const user = {
     SET_NAME: (state, name) => {
       state.name = name
     },
+    SET_TITLE: (state, title) => {
+      state.title = title
+    },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
@@ -25,7 +33,7 @@ const user = {
       state.roles = roles
     },
     SET_MENULIST: (state, menuList) => {
-        state.menuList = menuList
+      state.menuList = menuList
     },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
@@ -34,19 +42,21 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    Login({
+      commit
+    }, userInfo) {
       return new Promise((resolve, reject) => {
         ApiServer.common.login(userInfo).then(res => {
-            if (res.code == 200) {
-                setToken(res.result)
-                commit('SET_TOKEN',res.result)
-                resolve()
-            } else {
-                this.$message({
-                    type: 'error',
-                    message: res.message,
-                  })
-            }
+          if (res.code == 200) {
+            setToken(res.result)
+            commit('SET_TOKEN', res.result)
+            resolve()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message,
+            })
+          }
         }).catch(error => {
           reject(error)
         })
@@ -54,17 +64,20 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         ApiServer.common.getUserInfo().then(res => {
-          const user = res.data
+          const user = res.data;
           if (res.data.roleList && res.data.roleList.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.data.roleList)
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
-          console.log("name",user.name)
           commit('SET_NAME', user.name)
+          commit('SET_TITLE', user.title)
           localStorage.setItem('ms_username', user.name)
           commit('SET_MENULIST', res.data.menuList)
           resolve(res)
@@ -90,7 +103,9 @@ const user = {
     // },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({
+      commit
+    }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()

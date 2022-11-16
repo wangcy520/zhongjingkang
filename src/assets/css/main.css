@@ -57,7 +57,8 @@ a {
 }
 
 .el-table th {
-    background-color: #f5f7fa !important;
+    background-color: #b8e4fb !important;
+    color: #66767d;
 }
 
 .pagination {
@@ -174,4 +175,7 @@ a {
 
 .v-note-wrapper .v-note-panel {
     min-height: 500px;
+}
+/deep/ .el-dialog {
+  border-radius: 15px;
 }
