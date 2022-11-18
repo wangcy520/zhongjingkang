@@ -29,18 +29,19 @@
         </el-table-column>
         <el-table-column prop="durationCount" label="时间周期" width="150">
         </el-table-column>
-        <el-table-column label="状态" width="80">
+        <!-- <el-table-column label="状态" width="80">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status == '0' ? 'primary' : 'success'" disable-transitions>{{ scope.row.status ==
                 '1' ? '已启动' : '已禁用'
             }}</el-tag>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="370">
           <template slot-scope="scope">
-            <el-button @click="enableHandle(scope.row)" type="warning" plain size="small"
-              :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{ scope.row.status == 1 ?
-                  '停止' : '启动'
+            <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain
+              size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
+                  scope.row.status == 1 ?
+                    '停止' : '启动'
               }}</el-button>
             <el-button @click="editHandle(scope.row)" type="primary" plain size="small" icon="el-icon-edit">编辑
             </el-button>
@@ -115,7 +116,7 @@
 import ApiServer from '@/api/apiServer'
 import { getToken } from '@/utils/auth'
 export default {
-  data () {
+  data() {
     return {
       buttonDisabled: false,
       loading: false,
@@ -145,11 +146,11 @@ export default {
       ],
       date: '',
       queryForm: {
-        startTime: '',
-        endTime: '',
         pageParams: {
           pageNum: 1,
           pageSize: 10,
+          startTime: '',
+          endTime: '',
         },
       },
       durationCount: '',
@@ -183,25 +184,25 @@ export default {
     }
   },
   components: {},
-  created () {
+  created() {
     this.getTableData()
     this.getHospitalList()
   },
   methods: {
-    getHospitalList () {
+    getHospitalList() {
       ApiServer.manager.getHospitalList(this.queryForm).then((res) => {
         if (res.code == 200) {
           this.hospitalList = res.data.list
         }
       })
     },
-    handleRemove (file, fileList) {
+    handleRemove(file, fileList) {
       this.appForm.imageId = ''
     },
-    handleChange () {
+    handleChange() {
       console.log('handleChange')
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
       this.queryForm.pageSize = val
       //   let pageMax = Math.ceil(this.tableTotals / val)
@@ -210,12 +211,12 @@ export default {
       console.log(this.date)
       this.getTableData()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.queryForm.pageParams.pageNum = val
       this.getTableData()
     },
-    enableHandle (row) {
+    enableHandle(row) {
       this.$confirm(
         row.status == '1' ? '确定要停用？' : '确认要启用？',
         '提示',
@@ -243,7 +244,7 @@ export default {
           })
         })
     },
-    editHandle (row) {
+    editHandle(row) {
       console.log(row)
       this.isAdd = false
       this.buttonDisabled = false
@@ -265,7 +266,7 @@ export default {
         this.doctorForm.id = row.id
       })
     },
-    addHandle () {
+    addHandle() {
       this.isAdd = true
       this.buttonDisabled = false
       this.doctorInfoDialog = true
@@ -278,7 +279,7 @@ export default {
         }
       })
     },
-    delHandle (row) {
+    delHandle(row) {
       this.$confirm('此操作将永久删除该医生, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -307,23 +308,23 @@ export default {
           })
         })
     },
-    toDetails (row) {
+    toDetails(row) {
       let query = {
         doctorId: row.id
       }
       this.$router.push({ name: '3', query: query })
     },
-    toUserInfo (row) {
+    toUserInfo(row) {
       let query = {
         doctorId: row.id
       }
       this.$router.push({ name: 'userInfo', query: query })
     },
-    cancel (form) {
+    cancel(form) {
       this.$refs[form].resetFields()
       this.doctorInfoDialog = false
     },
-    submitDoctorInfo (form) {
+    submitDoctorInfo(form) {
       this.doctorForm.age = Number(this.doctorForm.age)
       this.buttonDisabled = true
       this.$refs.doctorForm.validate((valid) => {
@@ -333,7 +334,7 @@ export default {
           ApiServer.manager[requestAddr](this.doctorForm).then((res) => {
             if (res.code == 200) {
               this.doctorInfoDialog = false
-              this.$message({message:'操作成功',type:'success'})
+              this.$message({ message: '操作成功', type: 'success' })
               this.$refs[form].resetFields()
               this.doctorForm.roleIds = []
               this.getTableData()
@@ -342,7 +343,7 @@ export default {
         }
       })
     },
-    batchDel () {
+    batchDel() {
       this.DelIdList = []
       if (this.$refs.multipleTable.selection.length > 0) {
         this.$confirm('此操作将永久删除该医生, 是否继续?', '提示', {
@@ -377,11 +378,11 @@ export default {
           })
       }
     },
-    getTableData () {
+    getTableData() {
       this.loading = true;
       if (this.date != '') {
-        this.queryForm.startTime = this.date[0] + ' 00:00:00'
-        this.queryForm.endTime = this.date[1] + ' 23:59:59'
+        this.queryForm.pageParams.startTime = this.date[0] + ' 00:00:00'
+        this.queryForm.pageParams.endTime = this.date[1] + ' 23:59:59'
       }
       console.log(this.queryForm)
       ApiServer.manager.getDoctorList(this.queryForm).then((res) => {
@@ -392,11 +393,11 @@ export default {
         this.loading = false
       })
     },
-    handleAvatarSuccess (res, file) {
+    handleAvatarSuccess(res, file) {
       this.doctorForm.documentId = res.data.id
     },
   },
-  mounted () { },
+  mounted() { },
 }
 </script>
 

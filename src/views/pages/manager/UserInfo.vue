@@ -36,49 +36,45 @@
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="name" label="用户名" width="120" fixed="left">
         </el-table-column>
-        <el-table-column prop="code" label="编号" width="120">
-        </el-table-column>
         <el-table-column prop="residueCount" width="120" align="center">
           <template slot="header">
             <div>月卡(天)</div>
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.count }}/{{
-                scope.row.count - scope.row.residueCount
-            }}/{{ scope.row.residueCount }}</span>
+            <span>{{ scope.row.count }}/{{ scope.row.count - scope.row.residueCount }}/{{ scope.row.residueCount }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop=""  align="center">
+        <el-table-column prop="" align="center">
           <template slot="header">
-            <div>次卡(天)</div>
+            <div>次卡(次)</div>
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.days }}/{{
-                scope.row.days - scope.row.residueDays
-            }}/{{ scope.row.residueDays }}</span>
+            <span>{{ scope.row.days }}/{{ scope.row.days - scope.row.residueDays }}/{{ scope.row.residueDays }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="days" label="疗程(天)" align="center">
+        <el-table-column prop="residueDays" label="疗程(天)" align="center">
           <template slot="header">
             <div>疗程(天)</div>
-            <div>全部/已用/剩余</div>
+            <div>全部/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.residueCount }}</span>
+            <span>{{ scope.row.residueDays }}/11</span>
           </template>
         </el-table-column>
-        <el-table-column prop="residueDays" label="疗程(次)"  align="center">
+        <el-table-column prop="residueCount" label="疗程(次)" align="center">
           <template slot="header">
-            <div>疗程(天)</div>
-            <div>全部/已用/剩余</div>
+            <div>疗程(次)</div>
+            <div>全部/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.residueCount }}</span>
+            <span>{{ scope.row.residueCount }}/11</span>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" >
+        <el-table-column prop="code" label="编号" width="120">
+        </el-table-column>
+        <el-table-column prop="type" label="类型">
           <template slot-scope="scope">
             <span>{{
                 scope.row.type == 0
@@ -91,14 +87,14 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="sex" label="性别" >
+        <el-table-column prop="sex" label="性别">
           <template slot-scope="scope">
             {{ scope.row.sex == "1" ? "女" : "男" }}
           </template>
         </el-table-column>
-        <el-table-column prop="birthday" label="出生年月" >
+        <el-table-column prop="birthday" label="出生年月">
         </el-table-column>
-        <el-table-column prop="" label="年龄" >
+        <el-table-column prop="" label="年龄">
           <template slot-scope="scope">
             <p v-if="scope.row.birthday != null">
               {{ newYear - scope.row.birthday.split("-")[0] }}岁
@@ -106,12 +102,12 @@
             <p v-else></p>
           </template>
         </el-table-column>
-        <el-table-column prop="phone" label="手机" >
+        <el-table-column prop="phone" label="手机">
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
             <!-- <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button> -->
-            <el-button @click="open(scope.row)" type="warning" plain size="small"
+            <el-button @click="open(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain size="small"
               :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{ scope.row.status == 1 ?
                   '关闭' : '启用'
               }}</el-button>
@@ -275,13 +271,17 @@
 <script>
 import ApiServer from "@/api/apiServer";
 export default {
-  data () {
+  data() {
     return {
       diolog: 1,
       active: 1,
       newYear: "",
       nameList: [],
       statusList: [
+        {
+          name: "全部",
+          code: null
+        },
         {
           name: "近视",
           code: 0
@@ -385,12 +385,12 @@ export default {
     };
   },
   components: {},
-  created () {
+  created() {
     this.queryForm.doctorId = this.$route.query.doctorId
     this.getTableData();
   },
   methods: {
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryForm.pageSize = val;
       //   let pageMax = Math.ceil(this.tableTotals / val)
@@ -398,17 +398,17 @@ export default {
       if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return;
       this.getTableData();
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.queryForm.pageParams.pageNum = val;
       this.getTableData();
     },
-    editHandle (row) {
+    editHandle(row) {
       let obj = { ...row };
       console.log(obj);
       this.$router.push({ name: "userDetails", query: obj });
     },
-    edit (row) {
+    edit(row) {
       console.log(row);
       this.diolog = 1;
       this.editTitle = "编辑基础信息";
@@ -448,7 +448,7 @@ export default {
         this.archivesInfo = JSON.parse(row.healthRecord);
       }
     },
-    addHandle () {
+    addHandle() {
       this.isAdd = true;
       this.buttonDisabled = false;
       this.userInfoDialog = true;
@@ -482,7 +482,7 @@ export default {
       };
       this.editTitle = "用户基础信息";
     },
-    delHandle (row) {
+    delHandle(row) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -511,11 +511,11 @@ export default {
           });
         });
     },
-    cancel (form) {
+    cancel(form) {
       // this.$refs[form].resetFields()
       this.userInfoDialog = false
     },
-    submit () {
+    submit() {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
       this.$refs.userInfoForm.validate(valid => {
         if (valid) {
@@ -524,7 +524,7 @@ export default {
         }
       });
     },
-    submitUserInfo (form) {
+    submitUserInfo(form) {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
       this.buttonDisabled = true;
       var requestAddr = this.isAdd == false ? "postModify" : "saveUser";
@@ -542,7 +542,7 @@ export default {
         }
       });
     },
-    batchDel () {
+    batchDel() {
       this.DelIdList = [];
       if (this.$refs.multipleTable.selection.length > 0) {
         this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
@@ -577,7 +577,7 @@ export default {
           });
       }
     },
-    getTableData () {
+    getTableData() {
       this.loading = true;
       if (this.date != "") {
         this.queryForm.startDate = this.date[0];
@@ -591,7 +591,7 @@ export default {
         this.loading = false;
       });
     },
-    addressInfo (row) {
+    addressInfo(row) {
       this.$alert(row.area, "地址", {
         center: true,
         showConfirmButton: false
@@ -599,22 +599,22 @@ export default {
         console.log(err);
       });
     },
-    purchaseInfo (row) {
+    purchaseInfo(row) {
       this.$router.push({ name: "visionInfo", params: row });
     },
-    trainInfo () { },
-    visionInfo () { },
-    purchaseManagement (row) {
+    trainInfo() { },
+    visionInfo() { },
+    purchaseManagement(row) {
       this.$router.push({ name: "purchaseManager", params: row });
     },
-    getNameList () {
+    getNameList() {
       ApiServer.manager.getHospitalList().then(res => {
         if (res.code == 200) {
           this.nameList = res.data.list;
         }
       });
     },
-    open (row) {
+    open(row) {
       let status = row.status == 1 ? '启用' : '禁用';
       let params = {
         status: row.status == 1 ? 2 : 1,
@@ -638,7 +638,7 @@ export default {
       })
     }
   },
-  mounted () {
+  mounted() {
     var date = new Date();
     this.newYear = date.getFullYear();
     console.log(this.newYear)
