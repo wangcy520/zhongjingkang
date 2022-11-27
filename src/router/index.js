@@ -105,7 +105,7 @@ export default new Router({
                     name: '3',
                     path: '/3',
                     component: () => import( '../views/pages/manager/3'),
-                    meta: { title: '用户详情' },
+                    meta: { title: '订单详情' },
                     parmas: {}
                 },
                 {

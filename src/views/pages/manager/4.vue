@@ -34,9 +34,6 @@
         <el-col :span="2">
           <div class="grid-content">训练时间:{{ count }}分钟</div>
         </el-col>
-        <el-col :span="2">
-          <div class="grid-content">购买编号</div>
-        </el-col>
         <el-col :span="4">
           <div class="grid-content">定制时间:{{ item.orderTime }}</div>
         </el-col>
