@@ -25,7 +25,7 @@
         <el-col :span="2">
           <div class="grid-content">疗程周期: {{ item.treatmentType == 0 ? item.treatmentCount : item.treatmentDays }}</div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="grid-content">疗程周期合计:{{ item.treatmentCount || 0 }}次</div>
         </el-col>
         <el-col :span="2">
