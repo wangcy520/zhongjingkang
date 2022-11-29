@@ -125,7 +125,8 @@ export default {
     },
   },
   mounted () {
-    this.item = this.$route.query.item
+    let obj = JSON.parse(sessionStorage.getItem('query'))
+    this.item = obj.item
     console.log(this.item)
     this.getTableData()
   },

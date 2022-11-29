@@ -172,6 +172,7 @@ export default {
         orderCode: row.orderCode,
         item: row
       }
+      sessionStorage.setItem('query',JSON.stringify(query)) 
       this.$router.push({
         name: '4',
         query: query
