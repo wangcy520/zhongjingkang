@@ -470,7 +470,12 @@ export default {
       this.userInfoForm.status = Number(row.status);
       this.userInfoForm.sex = Number(row.sex);
       this.userInfoForm.id = row.id;
-      this.userInfoForm.relationList = row.relationList
+      if(row.patientRelationList.length>0){
+        this.userInfoForm.relationList = row.patientRelationList
+      }else{
+        let arr = [{ phone: '', name: '', relation: '' }]
+        this.userInfoForm.relationList = arr
+      }
       if (!row.healthRecord) {
         this.archivesInfo = {
           eyesight: {
