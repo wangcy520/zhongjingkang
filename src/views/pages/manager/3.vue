@@ -150,7 +150,8 @@ export default {
       this.getTableData()
     },
     getTableData() {
-      if (this.date != '') {
+      console.log(this.date)
+      if (this.date) {
         this.queryForm.pageParams.startTime = this.date[0]
         this.queryForm.pageParams.endTime = this.date[1]
       } else {

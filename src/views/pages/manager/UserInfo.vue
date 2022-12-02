@@ -640,9 +640,12 @@ export default {
     },
     getTableData() {
       this.loading = true;
-      if (this.date != "") {
+      if (this.date) {
         this.queryForm.startDate = this.date[0];
         this.queryForm.endDate = this.date[1];
+      }else{
+        this.queryForm.startDate ="";
+        this.queryForm.endDate = "";
       }
       ApiServer.manager.getUserInfoList(this.queryForm).then(res => {
         if (res.code == 200) {
