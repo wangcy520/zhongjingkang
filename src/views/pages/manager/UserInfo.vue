@@ -1,34 +1,41 @@
 <template>
   <div>
     <el-card>
-      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-        <el-form-item prop="name" label="用户名">
-          <el-input type="text" placeholder="请输入用户名名称" v-model="queryForm.name"></el-input>
-        </el-form-item>
-        <el-form-item prop="type" label="次/月卡">
-          <el-select v-model="queryForm.type" placeholder="请选择全部/次卡/月卡">
-            <el-option label="全部"></el-option>
-            <el-option label="次卡" :value="0"></el-option>
-            <el-option label="月卡" :value="1"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="name" label="手机号">
-          <el-input type="text" placeholder="请输入手机号码" v-model="queryForm.name"></el-input>
-        </el-form-item>
-        <el-form-item prop="status" label="患者类型">
-          <el-select v-model="queryForm.status" placeholder="请选择患者类型">
-            <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="status" label="即将到期">
-          <el-select v-model="queryForm.status" placeholder="">
-            <!-- <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
-            </el-option> -->
-          </el-select>
-        </el-form-item>
-        <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
-        <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline" label-width="80px">
+        <el-row :gutter="20">
+          <el-col :span="20">
+            <el-form-item prop="name" label="用户名">
+              <el-input type="text" placeholder="请输入用户名名称" v-model="queryForm.name"></el-input>
+            </el-form-item>
+            <el-form-item prop="type" label="次/月卡">
+              <el-select v-model="queryForm.type" placeholder="请选择全部/次卡/月卡">
+                <el-option label="全部"></el-option>
+                <el-option label="次卡" :value="0"></el-option>
+                <el-option label="月卡" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="name" label="手机号">
+              <el-input type="text" placeholder="请输入手机号码" v-model="queryForm.phone"></el-input>
+            </el-form-item>
+            <el-form-item prop="status" label="患者类型">
+              <el-select v-model="queryForm.status" placeholder="请选择患者类型">
+                <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="status" label="即将到期">
+              <el-select v-model="queryForm.status" placeholder="" style="width: 200px;">
+                <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增
+            </el-button>
+            <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
+          </el-col>
+        </el-row>
       </el-form>
     </el-card>
     <el-card>
@@ -42,7 +49,7 @@
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.count }}/{{ scope.row.count - scope.row.residueCount }}/{{ scope.row.residueCount }}</span>
+            <span>{{ scope.row.days }}/{{ scope.row.days - scope.row.residueDays }}/{{ scope.row.residueDays }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="" align="center">
@@ -51,7 +58,9 @@
             <div>全部/已用/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.days }}/{{ scope.row.days - scope.row.residueDays }}/{{ scope.row.residueDays }}</span>
+            <span>{{ scope.row.count }}/{{ scope.row.count - scope.row.residueCount }}/{{
+                scope.row.residueCount
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="residueDays" label="疗程(天)" align="center">
@@ -60,7 +69,10 @@
             <div>全部/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.residueDays }}/11</span>
+            <span v-if="scope.row.zjkOrder ? scope.row.zjkOrder.treatmentType == 0 : ''">-/-</span>
+            <span v-else>{{ scope.row.zjkOrder ? scope.row.zjkOrder.treatmentDays : 0 }}/{{
+                scope.row.zjkOrder ? scope.row.zjkOrder.residueDays : 0
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="residueCount" label="疗程(次)" align="center">
@@ -69,7 +81,10 @@
             <div>全部/剩余</div>
           </template>
           <template slot-scope="scope">
-            <span>{{ scope.row.residueCount }}/11</span>
+            <span v-if="scope.row.zjkOrder ? scope.row.zjkOrder.treatmentType == 1 : ''"> -/- </span>
+            <span v-else>{{ scope.row.zjkOrder ? scope.row.zjkOrder.treatmentCount : 0 }}/{{
+                scope.row.zjkOrder ? scope.row.zjkOrder.residueCount : 0
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="code" label="编号" width="120">
@@ -125,52 +140,85 @@
       </div>
     </el-card>
     <div>
-      <el-dialog :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel('userInfoForm')">
+      <el-dialog width="60%" :title="this.editTitle" :visible.sync="userInfoDialog" @close="cancel('userInfoForm')">
         <el-steps :active="active" :space="300" align-center style="display: flex;justify-content: center;">
           <el-step title="基础信息" icon="el-icon-success"></el-step>
           <el-step title="健康档案"></el-step>
         </el-steps>
-        <el-form :model="userInfoForm" ref="userInfoForm" label-width="120px" :inline="true" class="userForm"
-          label-position="left" style="margin: 50px;" v-if="diolog == 1" :rules="userRules">
-          <el-form-item label="用户名" prop="name">
-            <el-input style="width:100%" v-model="userInfoForm.name"></el-input>
-          </el-form-item>
-          <el-form-item label="用户编号" prop="code">
-            <el-input style="width:100%" disabled v-model="userInfoForm.code"></el-input>
-          </el-form-item>
-          <el-form-item label="出生年月" prop="birthday">
-            <!-- <el-input style="width:100%" v-model="userInfoForm.birthday"></el-input> -->
-            <el-date-picker style="width:200px" v-model="userInfoForm.birthday" type="month" format="yyyy-MM"
-              value-format="yyyy-MM-dd" placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-select v-model="userInfoForm.sex" placeholder="请选择" style="width:200px">
-              <el-option v-for="item in sexList" :key="item.code" :label="item.name" :value="item.code">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="身份证号" prop="idCard">
-            <el-input style="width:100%" v-model="userInfoForm.idCard"></el-input>
-          </el-form-item>
-          <el-form-item label="地址" prop="area">
-            <el-input style="width:100%" v-model="userInfoForm.area"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号" prop="phone">
-            <el-input style="width:100%" v-model="userInfoForm.phone"></el-input>
-          </el-form-item>
-          <el-form-item label="家长名" prop="parentsName">
-            <el-input style="width:100%" v-model="userInfoForm.parentsName"></el-input>
-          </el-form-item>
-          <el-form-item label="关系" prop="relation">
-            <el-input style="width:100%" v-model="userInfoForm.relation"></el-input>
-          </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="userInfoForm.status" placeholder="请选择" style="width:200px">
-              <el-option label="禁用" :value="0"></el-option>
-              <el-option label="启用" :value="1"></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form :model="userInfoForm" ref="userInfoForm" label-width="80px" :inline="true" class="userForm"
+          label-position="left" v-if="diolog == 1" :rules="userRules">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="用户名" prop="name">
+                <el-input style="width:100%" v-model="userInfoForm.name"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="用户编号" prop="code">
+                <el-input style="width:100%" disabled v-model="userInfoForm.code"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出生年月" prop="birthday">
+                <el-date-picker style="width:200px" v-model="userInfoForm.birthday" type="month" format="yyyy-MM"
+                  value-format="yyyy-MM-dd" placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="性别" prop="sex">
+                <el-select v-model="userInfoForm.sex" placeholder="请选择" style="width:200px">
+                  <el-option v-for="item in sexList" :key="item.code" :label="item.name" :value="item.code">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="身份证号" prop="idCard">
+                <el-input style="width:100%" v-model="userInfoForm.idCard"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="地址" prop="area">
+                <el-input style="width:100%" v-model="userInfoForm.area"></el-input>
+              </el-form-item>
+            </el-col>
+            <div v-for="(domain, index) in userInfoForm.relationList">
+              <el-col :span="8">
+                <el-form-item :label="'手机号' + (index+1)" :key="domain.index" :prop="'relationList.' + index + '.phone'"
+                  :rules="{
+                    required: true, message: '手机号不能为空', trigger: 'change'
+                  }">
+                  <el-input style="width:90%" v-model="domain.phone"></el-input>
+                  <i class="el-icon-circle-plus-outline"  @click.prevent="addRelationList(domain)" v-if="index == 0"></i>
+                  <i class=" el-icon-remove-outline"  @click.prevent="delRelationList(domain)" v-else></i>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="'家长' + (index+1)" :key="domain.index" :prop="'relationList.' + index + '.name'"
+                  :rules="{
+                    required: true, message: '家长不能为空', trigger: 'change'
+                  }">
+                  <el-input style="width:100%" v-model="domain.name"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="'关系' + (index+1)" :key="domain.index" :prop="'relationList.' + index + '.relation'"
+                  :rules="{
+                    required: true, message: '关系不能为空', trigger: 'change'
+                  }">
+                  <el-input style="width:100%" v-model="domain.relation"></el-input>
+                </el-form-item>
+              </el-col>
+            </div>
+
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="userInfoForm.status" placeholder="请选择" style="width:200px">
+                <el-option label="禁用" :value="0"></el-option>
+                <el-option label="启用" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
         </el-form>
         <el-form style="margin: 50px;" v-if="diolog == 2">
           <el-row :gutter="20">
@@ -260,7 +308,7 @@
           <el-button @click="cancel('userInfoForm')">取 消</el-button>
           <el-button type="primary" @click="submit" v-if="diolog == 1" plain>下一步</el-button>
           <el-button type="primary" @click="(diolog = 1), (active = 1)" v-if="diolog == 2" plain>上一步</el-button>
-          <el-button type="primary" @click="submitUserInfo('userInfoForm')" :disabled="buttonDisabled" plain
+          <el-button type="primary" @click="submitUserInfo('userInfoForm')"  plain
             v-if="diolog == 2">
             提交</el-button>
         </span>
@@ -291,7 +339,7 @@ export default {
           code: 1
         },
         {
-          name: "斜视",
+          name: "双眼视",
           code: 2
         }
       ],
@@ -306,16 +354,15 @@ export default {
         }
       ],
       userInfoForm: {
-        name: "",
+        name:'',
+        relationList: [{ phone: '', name: '', relation: '' }],
         code: "",
         birthday: "",
         sex: "",
         area: "",
-        phone: "",
         parentsName: "",
-        relation: "",
         idCard: "",
-        status: ""
+        status: "",
       },
       archivesInfo: {
         eyesight: {
@@ -370,6 +417,7 @@ export default {
       userInfoDialog: false,
       tableData: [],
       queryForm: {
+        phone: null,
         name: null,
         doctorId: null,
         parentsName: null,
@@ -404,29 +452,30 @@ export default {
       this.getTableData();
     },
     editHandle(row) {
-      let obj = { ...row };
-      console.log(obj);
-      this.$router.push({ name: "userDetails", query: obj });
+      console.log(row)
+      this.$router.push({ name: "userDetails", query: { id: row.id } });
     },
     edit(row) {
-      console.log(row);
       this.diolog = 1;
       this.editTitle = "编辑基础信息";
       this.isAdd = false;
       this.buttonDisabled = false;
       this.userInfoDialog = true;
-      this.userInfoForm = { ...row };
-      this.userInfoForm.name = row.name;
+      this.userInfoForm.name =row.name;
       this.userInfoForm.code = row.code;
       this.userInfoForm.birthday = row.birthday;
       this.userInfoForm.area = row.area;
-      this.userInfoForm.phone = row.phone;
       this.userInfoForm.parentsName = row.parentsName;
-      this.userInfoForm.relation = row.relation;
       this.userInfoForm.idCard = row.idCard;
       this.userInfoForm.status = Number(row.status);
       this.userInfoForm.sex = Number(row.sex);
       this.userInfoForm.id = row.id;
+      if(row.patientRelationList.length>0){
+        this.userInfoForm.relationList = row.patientRelationList
+      }else{
+        let arr = [{ phone: '', name: '', relation: '' }]
+        this.userInfoForm.relationList = arr
+      }
       if (!row.healthRecord) {
         this.archivesInfo = {
           eyesight: {
@@ -453,16 +502,15 @@ export default {
       this.buttonDisabled = false;
       this.userInfoDialog = true;
       this.userInfoForm = {
-        name: "",
+        name:'',
         code: "自动生成",
         birthday: "",
         sex: "",
         area: "",
-        phone: "",
         parentsName: "",
-        relation: "",
         idCard: "",
-        status: ""
+        status: "",
+        relationList: [{ phone: '', name: '', relation: '' }],
       };
       this.archivesInfo = {
         eyesight: {
@@ -514,6 +562,19 @@ export default {
     cancel(form) {
       // this.$refs[form].resetFields()
       this.userInfoDialog = false
+    },
+    addRelationList() {
+      this.userInfoForm.relationList.push({
+        phone: '',
+        name: '',
+        relation: ''
+      });
+    },
+    delRelationList(item) {
+      var index = this.userInfoForm.relationList.indexOf(item)
+      if (index !== -1) {
+        this.userInfoForm.relationList.splice(index, 1)
+      }
     },
     submit() {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
@@ -684,6 +745,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 50px 150px;
+  margin: 50px 20px 20px 50px;
 }
 </style>

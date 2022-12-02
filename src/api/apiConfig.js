@@ -70,7 +70,7 @@ const BASE_URL = process.env.API_ROOT,
         buyTimes:BASE_URL + 'backend/purchase/buyTimes',
         //编辑用户信息
         postModify:BASE_URL + 'backend/patient/modify',
-        
+        detail:BASE_URL + 'backend/patient/detail',
     }
 export default {
     COMMON,

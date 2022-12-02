@@ -2,13 +2,20 @@
   <div>
     <el-card>
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-        <el-form-item label="时间周期" prop="date">
-          <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
-            start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
-        <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
+        <el-row :gutter="20">
+          <el-col :span="20">
+            <el-form-item label="时间周期" prop="date">
+              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期" style="width:300px">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增
+            </el-button>
+            <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
+          </el-col>
+        </el-row>
       </el-form>
     </el-card>
     <el-card style="">
@@ -64,18 +71,23 @@
         <el-form ref="doctorForm" :model="doctorForm" :rules="rules" label-width="120px" style="margin-right: 50px;"
           label-position="left" :inline="true" class="userForm">
           <el-form-item label="类型" prop="type">
-            <el-input type="text" value="视训师" disabled style="width=250px"></el-input>
+            <el-select style="width:200px" v-model="doctorForm.type">
+              <!-- 医生0，护士1，视训师2 -->
+              <el-option label="医生" value='0'></el-option>
+              <el-option label="护士" value='1'></el-option>
+              <el-option label="视训师" value='2'></el-option>
+              <!-- <el-input type="text" value="视训师" disabled style="width=250px"></el-input> -->
             </el-select>
           </el-form-item>
           <el-form-item label="视训师识别码" prop="simpleCode">
-            <el-input disabled type="text" placeholder="请输入视训师识别码" v-model="doctorForm.simpleCode" style="width=250px">
+            <el-input disabled type="text" placeholder="请输入视训师识别码" v-model="doctorForm.simpleCode">
             </el-input>
           </el-form-item>
           <el-form-item label="医生姓名" prop="name">
             <el-input type="text" placeholder="请输入医生姓名" v-model="doctorForm.name" style="width=250px"></el-input>
           </el-form-item>
-          <el-form-item label="视训师编码" prop="code">
-            <el-input disabled type="text" placeholder="请输入视训师编码" v-model="doctorForm.code" style="width=250px">
+          <el-form-item label="视训师编号" prop="code">
+            <el-input disabled type="text" placeholder="请输入视训师编号" v-model="doctorForm.code" style="width=250px">
             </el-input>
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
@@ -155,6 +167,7 @@ export default {
       },
       durationCount: '',
       doctorForm: {
+        type:'',
         name: '',
         code: '',
         phone: '',
@@ -252,8 +265,6 @@ export default {
       row.status = Number(row.status)
       this.editTitle = '视训师信息'
       row.status = Number(row.status)
-      this.doctorForm.simpleCode = 'KE-1'
-      this.doctorForm.code = 'SGZX-KE-0001'
       this.$nextTick(() => {
         // this.doctorForm = JSON.parse(JSON.stringify(row))
         this.doctorForm.address = row.address
@@ -264,6 +275,9 @@ export default {
         this.doctorForm.name = row.name
         this.doctorForm.phone = row.phone
         this.doctorForm.id = row.id
+        this.doctorForm.simpleCode = row.simpleCode
+        this.doctorForm.code = row.code
+        this.doctorForm.type = row.type
       })
     },
     addHandle() {

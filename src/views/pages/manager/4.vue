@@ -25,7 +25,7 @@
         <el-col :span="2">
           <div class="grid-content">疗程周期: {{ item.treatmentType == 0 ? item.treatmentCount : item.treatmentDays }}</div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="grid-content">疗程周期合计:{{ item.treatmentCount || 0 }}次</div>
         </el-col>
         <el-col :span="2">
@@ -33,9 +33,6 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-content">训练时间:{{ count }}分钟</div>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-content">购买编号</div>
         </el-col>
         <el-col :span="4">
           <div class="grid-content">定制时间:{{ item.orderTime }}</div>
@@ -128,7 +125,8 @@ export default {
     },
   },
   mounted () {
-    this.item = this.$route.query.item
+    let obj = JSON.parse(sessionStorage.getItem('query'))
+    this.item = obj.item
     console.log(this.item)
     this.getTableData()
   },
