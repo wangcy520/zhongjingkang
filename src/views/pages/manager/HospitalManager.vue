@@ -192,8 +192,6 @@
             <el-col :span="24">
               <el-form-item label='营业执照' prop="documentId">
                 <div v-if="fileList.length>0" style="width: 200px;height: 150px;">
-                  <!-- downloadUrl -->
-                  <!-- http://120.77.70.11:8081 -->
                   <img style="width:100%;height:100%" v-for="item in fileList" :src="item.url" alt="">
                 </div>
                 <!-- <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.code" style="width=250px"></el-input> -->
@@ -328,7 +326,7 @@ export default {
       row.status = Number(row.status)
       this.editTitle = '机构信息'
       let d = {
-        url: 'http://120.77.70.11:8081' + row.documentUrl
+        url: url + row.documentUrl
       }
       list.push(d)
       if(row.documentUrl){
