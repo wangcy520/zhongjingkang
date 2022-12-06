@@ -144,13 +144,20 @@ export default {
       this.queryForm.pageParams.pageNum = val;
       this.getTableData()
     },
+    queryCount(){
+      let params = {
+        doctorId:this.$route.query.doctorId
+      } 
+      ApiServer.manager.queryCount(params).then(res=>{
+        console.log(res)
+      })
+    },
     handleSizeChange(val) {
       this.queryForm.pageParams.pageSize = val
       if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return
       this.getTableData()
     },
     getTableData() {
-      console.log(this.date)
       if (this.date) {
         this.queryForm.pageParams.startTime = this.date[0]
         this.queryForm.pageParams.endTime = this.date[1]
@@ -182,7 +189,8 @@ export default {
   },
   mounted() {
     // this.doctorId = this.$route.query.doctorId
-    this.getTableData()
+    this.getTableData()      
+    this.queryCount()
   },
 }
 </script>
