@@ -14,12 +14,12 @@
               </el-select>
             </el-form-item>
             <el-form-item prop="areaCode" label='分布区域'>
-              <el-cascader style="width:200px" :options="options" v-model="queryForm.areaCode"
+              <el-cascader style="width:200px" :options="options" ref="currentAddr" v-model="queryForm.areaCode"
                 @change="handleChange"></el-cascader>
             </el-form-item>
-            <el-form-item prop="type" label='商业模式'>
-              <el-select v-model="queryForm.type" style="width:200px">
-                <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id">
+            <el-form-item prop="business" label='商业模式'>
+              <el-select v-model="queryForm.business" style="width:200px">
+                <el-option v-for="item in businessList" :key="item.id" :label="item.name" :value="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -31,9 +31,9 @@
                 start-placeholder="开始日期" end-placeholder="结束日期" style="width:200px">
               </el-date-picker>
             </el-form-item>
-            <el-form-item prop="type" label='设备状态'>
-              <el-select v-model="queryForm.type" style="width:200px">
-                <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-form-item prop="device" label='设备状态'>
+              <el-select v-model="queryForm.device" style="width:200px">
+                <el-option v-for="item in deviceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -53,9 +53,9 @@
         </el-table-column>
         <el-table-column fixed prop="name" label="用户名" >
         </el-table-column>
-        <el-table-column prop="code" label="机构编号" >
+        <el-table-column prop="code" label="机构编号" width="150" >
           <template slot-scope="scope">
-            <span>{{scope.row.code == '1' ? '医院' : '机构'}}</span>
+            <span>{{scope.row.code}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="type" label="总设备数(台)" width="100">
@@ -65,17 +65,17 @@
         </el-table-column>
         <el-table-column prop="doctors" label="总用户数(名)" width="100">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{scope.row.totalUserCount}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="users" label="次卡用户" width="100">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{scope.row.timesUserCount === null ? 0 : scope.row.timesUserCount}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="subCardUsers" label="月卡用户" width="100">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{scope.row.daysUserCount === null ? 0 : scope.row.daysUserCount}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="monthlyCardUsers" label="一人一机(台)" width="100">
@@ -115,29 +115,30 @@
         </el-table-column>
         <el-table-column prop="regionalDistribution" label="机构属性" width="100">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{scope.row.type === '0' ? '视光中心' : scope.row.type === '1' ? '医院' : '门诊'}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="regionalDistribution" label="地区分布" width="100">
+        <el-table-column prop="regionalDistribution" label="地区分布" width="200">
           <template slot-scope="scope">
-            <span>-</span>
+            <span >{{scope.row.areaStr}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="100">
+        <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
             <!-- <el-button @click="editHandle(scope.row)"
                        type="primary"
                        size="small"
                        icon="el-icon-edit-outline">
                        </el-button> -->
-            <i class="el-icon-edit-outline" :style="{ color: '#409eff', 'font-size': '25px', cursor: 'pointer' }"
-              @click="editHandle(scope.row)"></i>
-            <i class="el-icon-delete" :style="{ color: 'red', 'font-size': '25px', cursor: 'pointer', 'margin-left': '10px' }"
-              @click="delHandle(scope.row)"></i>
-            <!-- <el-button @click="delHandle(scope.row)"
-                       type="danger"
+            <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain
+                       size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
+                scope.row.status == '1' ?
+                  '禁用' : '启用'
+              }}</el-button>
+            <el-button @click="editHandle(scope.row)"
                        size="small"
-                       icon="el-icon-delete">删除</el-button> -->
+                       icon="el-icon-edit"
+                       style="color:#409eff">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -155,38 +156,38 @@
             style="margin-right: 50px;">
             <el-col :span="12">
               <el-form-item label="负责人" prop="principal">
-                <el-input type="text" placeholder="请输入视光中心" v-model="hospitalForm.principal"
+                <el-input type="text" placeholder="请输入名称" v-model="hospitalForm.principal"
                   style="width:250px"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label='公司名称' prop="name">
-                <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.name" style="width:250px"></el-input>
+                <el-input type="text" placeholder="请输入公司名称" v-model="hospitalForm.name" style="width:250px"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item prop="code" label='机构编码'>
-                <el-select v-model="hospitalForm.code" style="width:250px">
-                  <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id">
-                  </el-option>
-                </el-select>
+              <el-form-item prop="code" label='机构编号'>
+                <el-input disabled type="text" placeholder="自动生成" v-model="hospitalForm.code" style="width:250px"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="dutyParagraph" label='税号'>
-                <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.dutyParagraph"
+                <el-input type="text" placeholder="请输入税号" v-model="hospitalForm.dutyParagraph"
                   style="width:250px"></el-input>
                 <!-- <el-cascader :options="options" v-model="hospitalForm.selectedOptions" @change="handleChange"></el-cascader> -->
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label='机构属性' prop="type">
-                <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.type" style="width:250px"></el-input>
+                <el-select v-model="hospitalForm.type" style="width:250px" placeholder="请选择机构属性">
+                  <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label='手机号' prop="phone">
-                <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.phone" style="width:250px"></el-input>
+                <el-input type="text" placeholder="请输入手机号" v-model="hospitalForm.phone" style="width:250px"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -195,9 +196,17 @@
                   <img style="width:100%;height:100%" v-for="item in fileList" :src="item.url" alt="">
                 </div>
                 <!-- <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.code" style="width=250px"></el-input> -->
-                <el-upload v-else v-model="hospitalForm.documentId" :action="uploadUrl" :limit="1" list-type="picture-card"
-                  :on-preview="handlePictureCardPreview" :on-exceed="handleExceed" :on-remove="handleRemove"
-                  :on-success="handleSuccess" :headers="myHeaders" name='multipartFile' :file-list="fileList">
+                <el-upload v-else v-model="hospitalForm.documentId"
+                           :class="{'hide-upload-btn': photoHide}"
+                           disabled: none
+                           :action="uploadUrl"
+                           :limit="1" list-type="picture-card"
+                           :on-preview="handlePictureCardPreview"
+                           :on-exceed="handleExceed"
+                           :on-remove="handleRemove"
+                           :on-success="handleSuccess"
+                           :headers="myHeaders" name='multipartFile'
+                           :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
@@ -209,7 +218,7 @@
               <el-form-item label='地址' prop="areaCode">
                 <!-- <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.area_code" style="width:250px"></el-input> -->
                 <div style="display:flex">
-                <el-cascader v-model="hospitalForm.areaCode" :options="options1" @change="handleChange" style="width:250px"></el-cascader>
+                <el-cascader v-model="hospitalForm.areaCode" :options="options1" ref="currentAddr" @change="handleChange" style="width:250px"></el-cascader>
                   <el-input v-model="hospitalForm.address" style="width: 500px;" />
                 </div>
               </el-form-item>
@@ -249,6 +258,7 @@ export default {
       hospitalInfoDialog: false,
       tableData: [],
       date: '',
+      currentAddr: '',
       queryForm: {
         type: null,
         areaCode: [],
@@ -269,7 +279,7 @@ export default {
         address: '',
         documentId: '',
         areaCode:[],
-        address:''
+        areaStr: ''
       },
       roleList: [],
       rules: {
@@ -277,25 +287,49 @@ export default {
         phone: [
           {
             required: true,
-            message: '请输入电话号码',
+            message: '电话号码格式有误',
             validator: this.commonJS.checkPhone,
             trigger: 'blur'
           }
         ]
       },
       tableTotals: 1,
-      levelList: ['三甲', '二甲', '一甲', '三乙', '二乙', '一乙', '三丙', '二丙', '一丙'],
       licenseDList: [6, 12, 36, 60],
       typeList: [
         {
-          name: '医院',
+          name: '视光中心',
           id: '0'
         },
         {
-          name: '机构',
+          name: '医院',
+          id: '1'
+        },
+        {
+          name: '门诊',
+          id: '2'
+        }
+      ],
+      businessList: [
+        {
+          name: '购买',
+          id: '0'
+        },
+        {
+          name: '租赁',
           id: '1'
         }
-      ]
+      ],
+      deviceList: [
+        {
+          name: '到期',
+          id: '0'
+        },
+        {
+          name: '活跃',
+          id: '1'
+        }
+      ],
+      photoHide: false
     }
   },
   components: {},
@@ -332,11 +366,13 @@ export default {
       if(row.documentUrl){
         this.fileList = list
       }else{
+        this.photoHide = false
         this.fileList = []
       }
       this.$nextTick(() => {
         this.hospitalForm = JSON.parse(JSON.stringify(row))
         this.hospitalForm.areaCode = row.areaCode.split(',')
+        this.currentAddr = row.areaStr
       })
     },
     addHandle() {
@@ -345,11 +381,41 @@ export default {
       this.buttonDisabled = false
       this.hospitalInfoDialog = true
       this.editTitle = '机构信息'
+      this.photoHide = false
+      this.currentAddr = ''
       ApiServer.select.selectRoleList().then(res => {
         if (res.code == 250) {
           this.roleList = res.data
         }
       })
+    },
+    enableHandle(row) {
+      this.$confirm(
+        row.status == '1' ? '确定要停用？' : '确认要启用？',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          row.status = row.status == '1' ? '0' : '1'
+          ApiServer.manager.updateHospitalInfo(row).then((res) => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: row.status == '1' ? '启用成功' : '停用成功',
+              })
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作',
+          })
+        })
     },
     delHandle(row) {
       this.$confirm('此操作将永久删除该医院, 是否继续?', '提示', {
@@ -387,6 +453,7 @@ export default {
     submitHospitalInfo(form) {
       if(this.hospitalForm.areaCode){
         this.hospitalForm.areaCode = this.hospitalForm.areaCode.join(',')
+        this.hospitalForm.areaStr = this.currentAddr.replaceAll(',', ' ')
       }
       this.buttonDisabled = true
       this.$refs.hospitalForm.validate(valid => {
@@ -462,12 +529,13 @@ export default {
       })
     },
     handleChange(value) {
-      console.log(value)
+      const addr = this.$refs["currentAddr"].getCheckedNodes();
+      this.currentAddr = addr[0].pathLabels + '';
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
       this.fileList = fileList
-      console.log(fileList)
+      this.photoHide = false
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -475,15 +543,14 @@ export default {
     },
     handleSuccess(file, fileList) {
       this.hospitalForm.documentId = file.data.id
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`只能上传一张照片`)
+      this.photoHide = true;
     }
   },
   mounted() { }
 }
 </script>
 <style scoped>
+
 /deep/ .el-dialog {
   border-radius: 10px;
 }
@@ -505,5 +572,12 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   margin: 50px;
+}
+
+.hide-upload-btn /deep/ .el-upload--picture-card {
+    display: none;
+}
+span {
+  white-space: nowrap;
 }
 </style>

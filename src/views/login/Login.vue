@@ -6,23 +6,27 @@
           <div class="login-left"></div>
         </el-col>
         <el-col :span="12">
-          <p class="ms-title">账号密码登录</p>
+          <p class="ms-title">登录</p>
           <div style="text-align: center;margin-top: 30px">
-            <div style="font-size: 8px">账号类型&nbsp;&nbsp;&nbsp;&nbsp;
-              <el-radio v-model="type" label="1">视光中心</el-radio>
-              <el-radio v-model="type" label="2">众晶康</el-radio>
+            <div style="font-size: 8px">
+              <el-radio v-model="type" @change="changeCard(true)" label="1">密码登陆</el-radio>
+              <el-radio v-model="type" @change="changeCard(false)" label="2">验证码登陆</el-radio>
             </div>
           </div>
-          <el-form :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
+          <el-form v-show="showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" placeholder="username">
+              <el-input v-model="loginForm.username" placeholder="用户名" >
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input type="password" placeholder="password" v-model="loginForm.password"
+              <el-input
+                type="password"
+                placeholder="密码"
+                v-model="loginForm.password"
+
                 @keyup.enter.native="submitForm()">
                 <template slot="prepend">
                   <i class="el-icon-lock"></i>
@@ -42,6 +46,33 @@
               <el-button type="primary" @click="submitForm()">登录</el-button>
             </div>
           </el-form>
+          <el-form v-show="!showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.phone" placeholder="请输入手机号" >
+                <template slot="prepend">
+                  <i class="el-icon-user"></i>
+                </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                placeholder="请输入短信验证码"
+                v-model="loginForm.smsCode"
+
+                @keyup.enter.native="submitForm()">
+                <template slot="prepend">
+                  <i class="el-icon-lock"></i>
+                </template>
+              </el-input>
+              <el-button style="white-space: nowrap">
+                获取短信验证码
+              </el-button>
+            </el-form-item>
+            <div class="login-btn">
+              <el-button type="primary" @click="submitForm()">登录</el-button>
+            </div>
+          </el-form>
         </el-col>
       </el-row>
     </el-card>
@@ -55,6 +86,7 @@ export default {
   name: 'login',
   data () {
     return {
+      showTable: true,
       key: 'aaaaaa',
       checked: false,
       title: this.$store.state.user.title,
@@ -65,6 +97,8 @@ export default {
         password: '',
         captchaId: '',
         code: '',
+        phone: '',
+        smsCode: ''
       },
       rules: {
         username: [
@@ -76,6 +110,9 @@ export default {
     }
   },
   methods: {
+    changeCard(val) {
+      this.showTable = val
+    },
     setCookie (c_name, c_pwd, exdate) {
       console.log('setCookie')
       var exdate = new Date()

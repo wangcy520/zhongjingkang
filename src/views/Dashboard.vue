@@ -1,6 +1,6 @@
 <template>
   <div style="background: #fff;height: 100%;width: 100%;">
-    <div class="homeTitle">欢迎进入众晶康管理系统</div>
+    <div class="homeTitle">欢迎进入{{ $store.state.user.title }}管理系统</div>
     <!-- <el-row :gutter="20">
             <el-col :span="8">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
