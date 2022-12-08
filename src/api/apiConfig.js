@@ -71,6 +71,8 @@ const BASE_URL = process.env.API_ROOT,
     //编辑用户信息
     postModify: BASE_URL + 'backend/patient/modify',
     detail: BASE_URL + 'backend/patient/detail',
+    //获取短信验证码
+    getValidSms: BASE_URL + '/captcha/getValidSms'
   }
 export default {
   COMMON,

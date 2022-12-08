@@ -15,28 +15,22 @@
           </div>
           <el-form v-show="showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" placeholder="用户名" >
+              <el-input v-model="loginForm.username" placeholder="用户名">
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input
-                type="password"
-                placeholder="密码"
-                v-model="loginForm.password"
-
-                @keyup.enter.native="submitForm()">
+              <el-input type="password" placeholder="密码" v-model="loginForm.password" @keyup.enter.native="submitForm()">
                 <template slot="prepend">
                   <i class="el-icon-lock"></i>
                 </template>
               </el-input>
+              <div style="text-align: right;font-size: 12px;color: #11a7f3;">找回密码?</div>
             </el-form-item>
             <el-form-item>
-              <el-input v-model="loginForm.code" placeholder="验证码" prefix-icon="lj-icon-yanzhengma" autocomplete="off"
-                autocapitalize="off" spellcheck="false" maxlength="4" @keyup.enter.native="submitForm"
-                style="float: left; width: 122px;"></el-input>
+              <el-input v-model="loginForm.code" placeholder="验证码" prefix-icon="lj-icon-yanzhengma" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="4" @keyup.enter.native="submitForm" style="float: left; width: 122px;"></el-input>
               <div class="captcha_code">
                 <img :src="captchaImg" ref="code" @click="getCaptchaInit()" style="margin-left: 65px;width: 100px">
               </div>
@@ -47,29 +41,20 @@
             </div>
           </el-form>
           <el-form v-show="!showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
-            <el-form-item prop="username">
-              <el-input v-model="loginForm.phone" placeholder="请输入手机号" >
+            <el-form-item prop="phone">
+              <el-input v-model="loginForm.phone" placeholder="请输入手机号" @input="getPhone">
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="password">
-              <el-input
-                type="password"
-                placeholder="请输入短信验证码"
-                v-model="loginForm.smsCode"
-
-                @keyup.enter.native="submitForm()">
-                <template slot="prepend">
-                  <i class="el-icon-lock"></i>
-                </template>
-              </el-input>
-              <el-button style="white-space: nowrap">
+            <el-form-item>
+              <el-input style="width: 122px;" placeholder="请输入短信验证码" />
+              <el-button style="white-space: nowrap;margin-left: 45px" @click="getCode" :disabled="isDisabled">
                 获取短信验证码
               </el-button>
             </el-form-item>
-            <div class="login-btn">
+            <div class=" login-btn">
               <el-button type="primary" @click="submitForm()">登录</el-button>
             </div>
           </el-form>
@@ -84,8 +69,9 @@ import ApiServer from '@/api/apiServer'
 import CryptoJS from 'crypto-js'
 export default {
   name: 'login',
-  data () {
+  data() {
     return {
+      isDisabled: true,
       showTable: true,
       key: 'aaaaaa',
       checked: false,
@@ -101,29 +87,37 @@ export default {
         smsCode: ''
       },
       rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-        ],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        phone: [{ required: true, required: true, message: '电话号码格式有误', validator: this.commonJS.checkPhone, trigger: 'blur' }]
       },
-      redirect: undefined,
+      redirect: undefined
     }
   },
   methods: {
+    getPhone(value) {
+      let phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+      if (phoneReg.test(value)) {
+        this.isDisabled = false
+      } else {
+        this.isDisabled = true
+      }
+    },
+    getCode() {
+      ApiServer.manager.getValidSms().then(res => {})
+    },
     changeCard(val) {
       this.showTable = val
     },
-    setCookie (c_name, c_pwd, exdate) {
+    setCookie(c_name, c_pwd, exdate) {
       console.log('setCookie')
       var exdate = new Date()
       console.log(c_name, c_pwd)
       exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdate)
-      document.cookie =
-        'mobile=' + c_name + ';path=/;expires=' + exdate.toGMTString()
-      document.cookie =
-        'password=' + c_pwd + ';path=/;expires=' + exdate.toGMTString()
+      document.cookie = 'mobile=' + c_name + ';path=/;expires=' + exdate.toGMTString()
+      document.cookie = 'password=' + c_pwd + ';path=/;expires=' + exdate.toGMTString()
     },
-    getCookie () {
+    getCookie() {
       if (document.cookie.length > 0) {
         this.checked = true
         var arr = document.cookie.split(';')
@@ -142,32 +136,32 @@ export default {
         }
       }
     },
-    clearCookie () {
+    clearCookie() {
       this.setCookie('', '', -1)
     },
-    submitForm () {
-      this.$refs.login.validate((valid) => {
+    submitForm() {
+      this.$refs.login.validate(valid => {
         if (valid) {
           this.checkedPwd(this.loginForm.username, this.loginForm.password)
           this.$store
             .dispatch('Login', this.loginForm)
-            .then((res) => {
+            .then(res => {
               this.$router.push({ path: this.redirect || '/' })
               this.$message.success('进入成功')
             })
-            .catch(() => { })
+            .catch(() => {})
         } else {
           this.$message.error('请输入账号和密码')
         }
       })
     },
-    getCaptchaInit () {
-      ApiServer.common.captchaInit().then((res) => {
+    getCaptchaInit() {
+      ApiServer.common.captchaInit().then(res => {
         this.loginForm.captchaId = res.message
         this.captchaImg = res.data
       })
     },
-    checkedPwd (username, pwd) {
+    checkedPwd(username, pwd) {
       console.log('进入', this.checked)
       if (this.checked) {
         let base64Pwd = Base64.encode(pwd)
@@ -176,14 +170,14 @@ export default {
       } else {
         this.clearCookie()
       }
-    },
+    }
   },
-  mounted () {
+  mounted() {
     this.getCookie()
   },
-  created () {
+  created() {
     this.getCaptchaInit()
-  },
+  }
 }
 </script>
 
