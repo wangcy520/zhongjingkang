@@ -40,10 +40,10 @@
               <el-button type="primary" @click="submitForm()">登录</el-button>
             </div>
           </el-form>
-          <el-form v-show="!showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
+          <el-form v-show="!showTable" :model="loginForm2" :rules="rules" ref="login2" label-width="0px" class="ms-content">
             <el-form-item prop="phone" :rules="[{ required: true, message: '电话号码格式有误',validator:commonJS.checkPhone,trigger: 'blur'}]">
               <!-- [{ required: true, required: true, message: '电话号码格式有误', validator: this.commonJS.checkPhone, trigger: 'blur' }] -->
-              <el-input v-model="loginForm.phone" placeholder="请输入手机号" @input="getPhone">
+              <el-input v-model="loginForm2.phone" placeholder="请输入手机号" @input="getPhone">
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
                 </template>
@@ -52,7 +52,7 @@
             <el-form-item>
               <el-col :span="12">
                 <el-form-item prop="dxCode" :rules="[{ required: true, message: '请输入短信验证码',trigger: 'blur'}]">
-                  <el-input style="width: 122px;" placeholder="请输入短信验证码" v-model="loginForm.dxCode" />
+                  <el-input style="width: 122px;" placeholder="请输入短信验证码" v-model="loginForm2.dxCode" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -97,8 +97,10 @@ export default {
         password: '',
         captchaId: '',
         code: '',
+        smsCode: ''
+      },
+      loginForm2: {
         phone: '',
-        smsCode: '',
         dxCode: ''
       },
       rules: {
@@ -191,14 +193,15 @@ export default {
           }
         })
       } else {
-        if (!this.loginForm.phone && !this.loginForm.dxCode) {
-          return
-        }
-        let params = {
-          mobile: this.loginForm.phone,
-          code: this.loginForm.dxCode
-        }
-        ApiServer.manager.smsLogin(params).then(res => {})
+        this.$refs.login2.validate(valid => {
+          if (valid) {
+            let params = {
+              mobile: this.loginForm.phone,
+              code: this.loginForm.dxCode
+            }
+            ApiServer.manager.smsLogin(params).then(res => {})
+          }
+        })
       }
     },
     getCaptchaInit() {
