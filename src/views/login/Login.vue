@@ -185,10 +185,13 @@ export default {
         that.$refs.login.validate(valid => {
           if (valid) {
             that.checkedPwd(that.loginForm.username, that.loginForm.password)
-            that.$store.dispatch('Login', that.loginForm).then(res => {
-              that.$router.push({ path: that.redirect || '/' })
-              that.$message.success('进入成功')
-            })
+            that.$store
+              .dispatch('Login', that.loginForm)
+              .then(res => {
+                that.$router.push({ path: that.redirect || '/' })
+                that.$message.success('进入成功')
+              })
+              .catch(() => {})
           } else {
             that.$message.error('请输入账号和密码')
           }
