@@ -182,7 +182,10 @@ class ApiService {
           return request.post1(API.MANAGER.getHospitalList, params);
         },
         getValidSms: function (params) {
-          return request.post1(API.MANAGER.getValidSms, params);
+          return request.post(API.MANAGER.getValidSms, params);
+        },
+        smsLogin: function (params) {
+          return request.post(API.MANAGER.smsLogin, params);
         },
       }
   }

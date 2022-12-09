@@ -41,7 +41,8 @@
             </div>
           </el-form>
           <el-form v-show="!showTable" :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
-            <el-form-item prop="phone">
+            <el-form-item prop="phone" :rules="[{ required: true, message: '电话号码格式有误',validator:commonJS.checkPhone,trigger: 'blur'}]">
+              <!-- [{ required: true, required: true, message: '电话号码格式有误', validator: this.commonJS.checkPhone, trigger: 'blur' }] -->
               <el-input v-model="loginForm.phone" placeholder="请输入手机号" @input="getPhone">
                 <template slot="prepend">
                   <i class="el-icon-user"></i>
@@ -49,10 +50,21 @@
               </el-input>
             </el-form-item>
             <el-form-item>
-              <el-input style="width: 122px;" placeholder="请输入短信验证码" />
-              <el-button style="white-space: nowrap;margin-left: 45px" @click="getCode" :disabled="isDisabled">
-                获取短信验证码
-              </el-button>
+              <el-col :span="12">
+                <el-form-item prop="dxCode" :rules="[{ required: true, message: '请输入短信验证码',trigger: 'blur'}]">
+                  <el-input style="width: 122px;" placeholder="请输入短信验证码" v-model="loginForm.dxCode" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item>
+                  <el-button style="white-space: nowrap;margin-left: 27px" @click="getCode" :disabled="isDisabled" v-if="show">
+                    获取短信验证码
+                  </el-button>
+                  <el-button style="white-space: nowrap;margin-left: 27px" :disabled=true v-else>
+                    请{{count}}秒后重试
+                  </el-button>
+                </el-form-item>
+              </el-col>
             </el-form-item>
             <div class=" login-btn">
               <el-button type="primary" @click="submitForm()">登录</el-button>
@@ -71,6 +83,8 @@ export default {
   name: 'login',
   data() {
     return {
+      show: true,
+      count: '',
       isDisabled: true,
       showTable: true,
       key: 'aaaaaa',
@@ -84,12 +98,12 @@ export default {
         captchaId: '',
         code: '',
         phone: '',
-        smsCode: ''
+        smsCode: '',
+        dxCode: ''
       },
       rules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        phone: [{ required: true, required: true, message: '电话号码格式有误', validator: this.commonJS.checkPhone, trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       redirect: undefined
     }
@@ -104,7 +118,31 @@ export default {
       }
     },
     getCode() {
-      ApiServer.manager.getValidSms().then(res => {})
+      let params = {
+        mobile: this.loginForm.phone
+      }
+      ApiServer.manager.getValidSms(params).then(res => {
+        if (res.code == 200) {
+          this.daojishi()
+          this.$message.success('验证码发送成功')
+        }
+      })
+    },
+    daojishi() {
+      const TIME_COUNT = 60
+      if (!this.timer) {
+        this.count = TIME_COUNT
+        this.show = false
+        this.timer = setInterval(() => {
+          if (this.count > 0 && this.count <= TIME_COUNT) {
+            this.count--
+          } else {
+            this.show = true
+            clearInterval(this.timer)
+            this.timer = null
+          }
+        }, 1000)
+      }
     },
     changeCard(val) {
       this.showTable = val
@@ -142,16 +180,25 @@ export default {
     submitForm() {
       this.$refs.login.validate(valid => {
         if (valid) {
-          this.checkedPwd(this.loginForm.username, this.loginForm.password)
-          this.$store
-            .dispatch('Login', this.loginForm)
-            .then(res => {
+          if (this.showTable == true) {
+            this.checkedPwd(this.loginForm.username, this.loginForm.password)
+            this.$store.dispatch('Login', this.loginForm).then(res => {
               this.$router.push({ path: this.redirect || '/' })
               this.$message.success('进入成功')
             })
-            .catch(() => {})
+          } else {
+            let params = {
+              mobile: this.loginForm.phone,
+              code: this.loginForm.dxCode
+            }
+            ApiServer.manager.smsLogin(params).then(res => {})
+          }
         } else {
-          this.$message.error('请输入账号和密码')
+          if (this.showTable == true) {
+            this.$message.error('请输入账号和密码')
+          } else {
+            this.$message.error('请输入手机号和短信验证码')
+          }
         }
       })
     },
