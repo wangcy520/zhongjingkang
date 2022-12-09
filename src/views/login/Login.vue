@@ -203,7 +203,10 @@ export default {
               mobile: that.loginForm.phone,
               code: that.loginForm.dxCode
             }
-            ApiServer.manager.smsLogin(params).then(res => {})
+            ApiServer.manager.smsLogin(params).then(res => {
+              that.$router.push({ path: that.redirect || '/' })
+              that.$message.success('进入成功')
+            })
           }
         })
       }
