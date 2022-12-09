@@ -180,24 +180,25 @@ export default {
       this.setCookie('', '', -1)
     },
     submitForm() {
-      if (this.showTable == true) {
-        this.$refs.login.validate(valid => {
+      let that = this
+      if (that.showTable == true) {
+        that.$refs.login.validate(valid => {
           if (valid) {
-            this.checkedPwd(this.loginForm.username, this.loginForm.password)
-            this.$store.dispatch('Login', this.loginForm).then(res => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.$message.success('进入成功')
+            that.checkedPwd(that.loginForm.username, that.loginForm.password)
+            that.$store.dispatch('Login', that.loginForm).then(res => {
+              that.$router.push({ path: that.redirect || '/' })
+              that.$message.success('进入成功')
             })
           } else {
-            this.$message.error('请输入账号和密码')
+            that.$message.error('请输入账号和密码')
           }
         })
       } else {
-        this.$refs.login2.validate(valid => {
+        that.$refs.login2.validate(valid => {
           if (valid) {
             let params = {
-              mobile: this.loginForm.phone,
-              code: this.loginForm.dxCode
+              mobile: that.loginForm.phone,
+              code: that.loginForm.dxCode
             }
             ApiServer.manager.smsLogin(params).then(res => {})
           }
