@@ -178,29 +178,28 @@ export default {
       this.setCookie('', '', -1)
     },
     submitForm() {
-      this.$refs.login.validate(valid => {
-        if (valid) {
-          if (this.showTable == true) {
+      if (this.showTable == true) {
+        this.$refs.login.validate(valid => {
+          if (valid) {
             this.checkedPwd(this.loginForm.username, this.loginForm.password)
             this.$store.dispatch('Login', this.loginForm).then(res => {
               this.$router.push({ path: this.redirect || '/' })
               this.$message.success('进入成功')
             })
           } else {
-            let params = {
-              mobile: this.loginForm.phone,
-              code: this.loginForm.dxCode
-            }
-            ApiServer.manager.smsLogin(params).then(res => {})
-          }
-        } else {
-          if (this.showTable == true) {
             this.$message.error('请输入账号和密码')
-          } else {
-            this.$message.error('请输入手机号和短信验证码')
           }
+        })
+      } else {
+        if (!this.loginForm.phone && !this.loginForm.dxCode) {
+          return
         }
-      })
+        let params = {
+          mobile: this.loginForm.phone,
+          code: this.loginForm.dxCode
+        }
+        ApiServer.manager.smsLogin(params).then(res => {})
+      }
     },
     getCaptchaInit() {
       ApiServer.common.captchaInit().then(res => {
