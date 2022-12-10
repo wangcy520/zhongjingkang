@@ -23,6 +23,23 @@ class ApiService {
             }
           });
         },
+        login2: function (params) {
+          return axios({
+            method: 'post',
+            url: `${API.MANAGER.smsLogin}`,
+            data: params,
+            transformRequest: [function (data) {
+              let ret = '';
+              for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+              }
+              return ret;
+            }],
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }
+          });
+        },
         captchaInit: function () {
           return request.get(API.COMMON.captchaInit);
         },
@@ -185,7 +202,7 @@ class ApiService {
           return request.post(API.MANAGER.getValidSms, params);
         },
         smsLogin: function (params) {
-          return request.get(API.MANAGER.smsLogin, params);
+          return request.post(API.MANAGER.smsLogin, params);
         },
       }
   }

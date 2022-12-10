@@ -62,7 +62,26 @@ const user = {
         })
       })
     },
-
+    Login2({
+      commit
+    }, userInfo) {
+      return new Promise((resolve, reject) => {
+        ApiServer.common.login2(userInfo).then(res => {
+          if (res.code == 200) {
+            setToken(res.result)
+            commit('SET_TOKEN', res.result)
+            resolve()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message,
+            })
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 获取用户信息
     GetInfo({
       commit,

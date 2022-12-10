@@ -79,6 +79,7 @@
 <script>
 import ApiServer from '@/api/apiServer'
 import CryptoJS from 'crypto-js'
+import { setToken } from '@/utils/auth'
 export default {
   name: 'login',
   data() {
@@ -188,6 +189,7 @@ export default {
             that.$store
               .dispatch('Login', that.loginForm)
               .then(res => {
+                console.log(that.redirect)
                 that.$router.push({ path: that.redirect || '/' })
                 that.$message.success('进入成功')
               })
@@ -203,14 +205,31 @@ export default {
               mobile: that.loginForm2.phone,
               code: that.loginForm2.dxCode
             }
-            ApiServer.manager.smsLogin(params).then(res => {
-              if (res.code === 200) {
+            that.$store
+              .dispatch('Login2', params)
+              .then(res => {
                 that.$router.push({ path: that.redirect || '/' })
                 that.$message.success('进入成功')
-              }
-            })
+              })
+              .catch(() => {})
           }
         })
+        //   }
+        // })
+        // that.$refs.login2.validate(valid => {
+        //   if (valid) {
+        //     let params = {
+        //       mobile: that.loginForm2.phone,
+        //       code: that.loginForm2.dxCode
+        //     }
+        //     ApiServer.manager.smsLogin(params).then(res => {
+        //       if (res.code == 200) {
+        //         // setToken(res.result)
+        //         that.$message.success('进入成功')
+        //       }
+        //     })
+        //   }
+        // })
       }
     },
     getCaptchaInit() {
