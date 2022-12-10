@@ -121,7 +121,7 @@ export default {
     },
     getCode() {
       let params = {
-        mobile: this.loginForm.phone
+        mobile: this.loginForm2.phone
       }
       ApiServer.manager.getValidSms(params).then(res => {
         if (res.code == 200) {
@@ -200,12 +200,14 @@ export default {
         that.$refs.login2.validate(valid => {
           if (valid) {
             let params = {
-              mobile: that.loginForm.phone,
-              code: that.loginForm.dxCode
+              mobile: that.loginForm2.phone,
+              code: that.loginForm2.dxCode
             }
             ApiServer.manager.smsLogin(params).then(res => {
-              that.$router.push({ path: that.redirect || '/' })
-              that.$message.success('进入成功')
+              if (res.code === 200) {
+                that.$router.push({ path: that.redirect || '/' })
+                that.$message.success('进入成功')
+              }
             })
           }
         })

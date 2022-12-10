@@ -185,7 +185,7 @@ class ApiService {
           return request.post(API.MANAGER.getValidSms, params);
         },
         smsLogin: function (params) {
-          return request.post(API.MANAGER.smsLogin, params);
+          return request.get(API.MANAGER.smsLogin, params);
         },
       }
   }
