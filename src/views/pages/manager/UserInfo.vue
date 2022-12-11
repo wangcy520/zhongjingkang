@@ -673,7 +673,13 @@ export default {
         this.queryForm.endDate = "";
       }
       ApiServer.manager.getUserInfoList(this.queryForm).then(res => {
-        if (res.code == 200) {
+        if (res.code === 200) {
+          res.data.list.forEach(function (val) {
+            if (val.birthday) {
+              let splitBirthday = val.birthday.split("-");
+              val.birthday = splitBirthday[0] + '-' + splitBirthday[1]
+            }
+          })
           this.tableData = res.data.list;
           this.tableTotals = Number(res.data.total);
         }
