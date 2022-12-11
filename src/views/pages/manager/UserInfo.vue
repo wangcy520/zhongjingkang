@@ -8,7 +8,7 @@
               <el-input type="text" placeholder="请输入用户名名称" v-model="queryForm.name"></el-input>
             </el-form-item>
             <el-form-item prop="type" label="次/月卡">
-              <el-select v-model="queryForm.type" placeholder="请选择全部/次卡/月卡">
+              <el-select v-model="queryForm.cardType" placeholder="请选择全部/次卡/月卡">
                 <el-option label="全部"></el-option>
                 <el-option label="次卡" :value="0"></el-option>
                 <el-option label="月卡" :value="1"></el-option>
@@ -18,14 +18,14 @@
               <el-input type="text" placeholder="请输入手机号码" v-model="queryForm.phone"></el-input>
             </el-form-item>
             <el-form-item prop="status" label="患者类型">
-              <el-select v-model="queryForm.status" placeholder="请选择患者类型">
+              <el-select v-model="queryForm.type" placeholder="请选择患者类型">
                 <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item prop="status" label="即将到期">
-              <el-select v-model="queryForm.status" placeholder="" style="width: 200px;">
-                <el-option v-for="item in statusList" :key="item.code" :label="item.name" :value="item.code">
+              <el-select v-model="expiresType" placeholder="请选择到期类型卡" >
+                <el-option v-for="item in expiresTypeList" :key="item.code" :label="item.name" :value="item.code">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -122,9 +122,9 @@
         <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
             <!-- <el-button @click="open(scope.row)" icon="el-icon-search" size="small">启用/关闭</el-button> -->
-            <el-button @click="open(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain size="small"
-              :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{ scope.row.status == 1 ?
-                  '关闭' : '启用'
+            <el-button @click="open(scope.row)" :type="scope.row.status == 1 ? 'success' : 'danger'" plain size="small"
+              :icon="scope.row.status == '1' ?'el-icon-video-play':'el-icon-video-pause' ">{{ scope.row.status == 1 ?
+                  '启用' : '禁用'
               }}</el-button>
             <el-button @click="edit(scope.row)" type="primary" size="small" icon="el-icon-edit" plain>编辑</el-button>
             <el-button @click="editHandle(scope.row)" type="primary" size="small" icon="el-icon-s-order" plain>档案
@@ -190,7 +190,8 @@
                     required: true, message: '手机号不能为空', trigger: 'change'
                   }">
                   <el-input style="width:90%" v-model="domain.phone"></el-input>
-                  <i class="el-icon-circle-plus-outline"  @click.prevent="addRelationList(domain)" v-if="index == 0"></i>
+                  <i class="el-icon-circle-plus-outline"  @click.prevent="addRelationList(domain)"
+                     v-if= "userInfoForm.relationList.length >= 3 ? false : index === 0" ></i>
                   <i class=" el-icon-remove-outline"  @click.prevent="delRelationList(domain)" v-else></i>
                 </el-form-item>
               </el-col>
@@ -214,8 +215,8 @@
 
             <el-form-item label="状态" prop="status">
               <el-select v-model="userInfoForm.status" placeholder="请选择" style="width:200px">
-                <el-option label="禁用" :value="0"></el-option>
-                <el-option label="启用" :value="1"></el-option>
+                <el-option label="禁用" :value="1"></el-option>
+                <el-option label="启用" :value="0"></el-option>
               </el-select>
             </el-form-item>
           </el-row>
@@ -321,6 +322,7 @@ import ApiServer from "@/api/apiServer";
 export default {
   data() {
     return {
+      expiresType: '',
       diolog: 1,
       active: 1,
       newYear: "",
@@ -341,7 +343,7 @@ export default {
         {
           name: "双眼视",
           code: 2
-        }
+        },
       ],
       cardTypeList: [
         {
@@ -351,6 +353,28 @@ export default {
         {
           name: "月卡",
           id: "1"
+        }
+      ],
+      expiresTypeList: [
+        {
+          name: "全部",
+          code: "0"
+        },
+        {
+          name: "全部次卡",
+          code: "1"
+        },
+        {
+          name: "全部月卡",
+          code: "2"
+        },
+        {
+          name: "全部疗程",
+          code: "3"
+        },
+        {
+          name: "会员卡",
+          code: "4"
         }
       ],
       userInfoForm: {
@@ -421,7 +445,8 @@ export default {
         name: null,
         doctorId: null,
         parentsName: null,
-        type: null,
+        type: '',
+        cardType: null,
         startDate: "",
         endDate: "",
         pageParams: {
@@ -681,7 +706,7 @@ export default {
     open(row) {
       let status = row.status == 1 ? '启用' : '禁用';
       let params = {
-        status: row.status == 1 ? 2 : 1,
+        status: row.status == 1 ? 0 : 1,
         id: row.id
       }
       this.$confirm(
@@ -696,7 +721,7 @@ export default {
         ApiServer.manager.postModify(params).then(res => {
           if (res.code == 200) {
             this.getTableData();
-            this.$message({ message: "操作成功", type: "success" });
+            this.$message({ message: "已" + status, type: "success" });
           }
         });
       })

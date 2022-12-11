@@ -48,7 +48,7 @@
             <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain
               size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
                   scope.row.status == 1 ?
-                    '停止' : '启动'
+                    '禁用' : '启用'
               }}</el-button>
             <el-button @click="editHandle(scope.row)" type="primary" plain size="small" icon="el-icon-edit">编辑
             </el-button>
@@ -231,7 +231,7 @@ export default {
     },
     enableHandle(row) {
       this.$confirm(
-        row.status == '1' ? '确定要停用？' : '确认要启用？',
+        row.status == '1' ? '确定要禁用？' : '确认要启用？',
         '提示',
         {
           confirmButtonText: '确定',
@@ -245,7 +245,7 @@ export default {
             if (res.code == 200) {
               this.$message({
                 type: 'success',
-                message: row.status == '1' ? '启动成功' : '停用成功',
+                message: row.status == '1' ? '已启用' : '已禁用',
               })
             }
           })

@@ -165,7 +165,7 @@
         </el-form-item> -->
           <el-col :span="12">
             <el-form-item label="有效期" prop="usefulLife">
-              <el-date-picker v-model="buyForm.usefulLife" type="date" style="width:200px" placeholder="选择日期">
+              <el-date-picker v-model="buyForm.usefulLife" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -180,10 +180,10 @@
             </el-form-item>
           </el-col>
           <el-form-item style="width:100%;text-align: center;">
-            <span>总购买记录：月卡：{{ item.days }}天 次卡：{{ item.count }}次</span>
+            <span>总购买记录：月卡：{{ item.days }}天&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;次卡：{{ item.count }}次</span>
           </el-form-item>
           <el-form-item style="width:100%;text-align: center;">
-            <span>总剩余次数：月卡：{{ item.residueDays }}天 次卡：{{ item.residueCount }}次</span>
+            <span>总剩余次数：月卡：{{ item.residueDays }}天&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;次卡：{{ item.residueCount }}次</span>
           </el-form-item>
         </el-row>
       </el-form>
@@ -263,7 +263,7 @@ export default {
     },
     getbuyList() {
       let params = {
-        patientId: this.item.id,
+        patientId: this.id,
         pageParams: {
           pageNum: this.pageParams.pageNum,
           pageSize: this.pageParams.pageSize
