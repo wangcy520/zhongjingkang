@@ -67,9 +67,10 @@ const user = {
     }, userInfo) {
       return new Promise((resolve, reject) => {
         ApiServer.common.login2(userInfo).then(res => {
+          console.log(res)
           if (res.code == 200) {
-            setToken(res.result)
-            commit('SET_TOKEN', res.result)
+            setToken(res.message)
+            commit('SET_TOKEN', res.message)
             resolve()
           } else {
             this.$message({
