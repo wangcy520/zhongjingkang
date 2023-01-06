@@ -11,8 +11,7 @@
               <el-input v-model="queryForm.orderCode"></el-input>
             </el-form-item>
             <el-form-item prop="leaseTime" label="下单时间">
-              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至"
-                start-placeholder="开始日期" end-placeholder="结束日期">
+              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -21,7 +20,7 @@
           </el-col>
         </el-row>
       </el-form>
-
+      <div>订单总数：{{ orderCount }}</div>
       <el-table :data="tableData" v-loading="loading" ref="multipleTable">
         <el-table-column type="selection" width="55">
         </el-table-column>
@@ -71,10 +70,7 @@
         </el-table-column>
       </el-table>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="queryForm.pageParams.pageNum" :page-sizes="[10, 50, 100, 200]"
-          :page-size="queryForm.pageParams.pageSize" layout="total, sizes, prev, pager, next, jumper"
-          :total="tableTotals">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryForm.pageParams.pageNum" :page-sizes="[10, 50, 100, 200]" :page-size="queryForm.pageParams.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
         </el-pagination>
       </div>
     </el-card>
@@ -93,7 +89,7 @@ export default {
           pageNum: 1,
           pageSize: 10,
           startTime: '',
-          endTime: '',
+          endTime: ''
         },
         doctorId: this.$route.query.doctorId
       },
@@ -104,52 +100,55 @@ export default {
       businessModeList: [
         {
           name: '租赁',
-          code: '0',
+          code: '0'
         },
         {
           name: '购买',
-          code: '1',
-        },
+          code: '1'
+        }
       ],
       leaseTimeList: [
         {
           name: '一年',
-          code: '1',
+          code: '1'
         },
         {
           name: '二年',
-          code: '2',
+          code: '2'
         },
         {
           name: '三年',
-          code: '3',
-        },
+          code: '3'
+        }
       ],
       statusList: [
         {
           name: '正常运行',
-          code: '0',
+          code: '0'
         },
         {
           name: '设备故障',
-          code: '1',
-        },
+          code: '1'
+        }
       ],
+      orderCount: 0
     }
   },
   components: {},
-  created() { },
+  created() {},
   methods: {
     handleCurrentChange(val) {
-      this.queryForm.pageParams.pageNum = val;
+      this.queryForm.pageParams.pageNum = val
       this.getTableData()
     },
-    queryCount(){
+    queryCount() {
       let params = {
-        doctorId:this.$route.query.doctorId
-      } 
-      ApiServer.manager.queryCount(params).then(res=>{
-        console.log(res)
+        doctorId: this.$route.query.doctorId
+      }
+      ApiServer.manager.queryCount(params).then(res => {
+        if (res.code == 200) {
+          this.orderCount = res.data.orderCount
+        }
       })
     },
     handleSizeChange(val) {
@@ -166,7 +165,7 @@ export default {
         this.queryForm.pageParams.endTime = ''
       }
       this.loading = true
-      ApiServer.manager.getEquipmentList(this.queryForm).then((res) => {
+      ApiServer.manager.getEquipmentList(this.queryForm).then(res => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.list
@@ -180,7 +179,7 @@ export default {
         orderCode: row.orderCode,
         item: row
       }
-      sessionStorage.setItem('query',JSON.stringify(query)) 
+      sessionStorage.setItem('query', JSON.stringify(query))
       this.$router.push({
         name: '4',
         query: query
@@ -189,9 +188,9 @@ export default {
   },
   mounted() {
     // this.doctorId = this.$route.query.doctorId
-    this.getTableData()      
+    this.getTableData()
     this.queryCount()
-  },
+  }
 }
 </script>
 

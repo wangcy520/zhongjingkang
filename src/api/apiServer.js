@@ -204,6 +204,10 @@ class ApiService {
         smsLogin: function (params) {
           return request.post(API.MANAGER.smsLogin, params);
         },
+        queryCount: function (params) {
+          return request.post1(API.MANAGER.queryCount, params);
+        },
+
       }
   }
 }

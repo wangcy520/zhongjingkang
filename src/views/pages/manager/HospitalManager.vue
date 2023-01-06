@@ -14,8 +14,7 @@
               </el-select>
             </el-form-item>
             <el-form-item prop="areaCode" label='分布区域'>
-              <el-cascader style="width:200px" :options="options" ref="currentAddr" v-model="queryForm.areaCode"
-                @change="handleChange"></el-cascader>
+              <el-cascader style="width:200px" :options="options" ref="currentAddr" v-model="queryForm.areaCode" @change="handleChange"></el-cascader>
             </el-form-item>
             <el-form-item prop="business" label='商业模式'>
               <el-select v-model="queryForm.business" style="width:200px">
@@ -27,8 +26,7 @@
               <!-- <el-date-picker style="width:200px" v-model="queryForm.date" type="datetime" placeholder="选择日期时间"
                 value-format="yyyy-MM-dd HH:mm:ss">
               </el-date-picker> -->
-              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
-                start-placeholder="开始日期" end-placeholder="结束日期" style="width:200px">
+              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:200px">
               </el-date-picker>
             </el-form-item>
             <el-form-item prop="device" label='设备状态'>
@@ -40,8 +38,7 @@
           <el-col :span="4">
             <el-form-item>
               <el-button @click="getTableData()" icon="el-icon-search" style="color: #409EFF" round>查询</el-button>
-              <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF"
-                round>新增</el-button>
+              <el-button @click="addHandle()" icon="el-icon-circle-plus-outline" style="color: #409EFF" round>新增</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -51,9 +48,9 @@
       <el-table :data="tableData" style="width: 100%" v-loading="loading" ref="multipleTable">
         <el-table-column fixed type="index" label="序号" width="50">
         </el-table-column>
-        <el-table-column fixed prop="name" label="用户名" >
+        <el-table-column fixed prop="name" label="用户名">
         </el-table-column>
-        <el-table-column prop="code" label="机构编号" width="150" >
+        <el-table-column prop="code" label="机构编号" width="150">
           <template slot-scope="scope">
             <span>{{scope.row.code}}</span>
           </template>
@@ -120,7 +117,7 @@
         </el-table-column>
         <el-table-column prop="regionalDistribution" label="地区分布" width="200">
           <template slot-scope="scope">
-            <span >{{scope.row.areaStr}}</span>
+            <span>{{scope.row.areaStr}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
@@ -130,34 +127,26 @@
                        size="small"
                        icon="el-icon-edit-outline">
                        </el-button> -->
-            <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain
-                       size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
+            <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
                 scope.row.status == '1' ?
                   '禁用' : '启用'
               }}</el-button>
-            <el-button @click="editHandle(scope.row)"
-                       size="small"
-                       icon="el-icon-edit"
-                       style="color:#409eff">编辑</el-button>
+            <el-button @click="editHandle(scope.row)" size="small" icon="el-icon-edit" style="color:#409eff">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="queryForm.pageNum" :page-sizes="[10, 50, 100, 250]" :page-size="queryForm.pageSize"
-          layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryForm.pageNum" :page-sizes="[10, 50, 100, 250]" :page-size="queryForm.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="tableTotals">
         </el-pagination>
       </div>
     </el-card>
     <div>
       <el-dialog :title="this.editTitle" :visible.sync="hospitalInfoDialog" @close="cancel('hospitalForm')">
         <el-row :gutter="10">
-          <el-form ref="hospitalForm" :model="hospitalForm" :rules="rules" label-width="140px"
-            style="margin-right: 50px;">
+          <el-form ref="hospitalForm" :model="hospitalForm" :rules="rules" label-width="140px" style="margin-right: 50px;">
             <el-col :span="12">
               <el-form-item label="负责人" prop="principal">
-                <el-input type="text" placeholder="请输入名称" v-model="hospitalForm.principal"
-                  style="width:250px"></el-input>
+                <el-input type="text" placeholder="请输入名称" v-model="hospitalForm.principal" style="width:250px"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -172,8 +161,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item prop="dutyParagraph" label='税号'>
-                <el-input type="text" placeholder="请输入税号" v-model="hospitalForm.dutyParagraph"
-                  style="width:250px"></el-input>
+                <el-input type="text" placeholder="请输入税号" v-model="hospitalForm.dutyParagraph" style="width:250px"></el-input>
                 <!-- <el-cascader :options="options" v-model="hospitalForm.selectedOptions" @change="handleChange"></el-cascader> -->
               </el-form-item>
             </el-col>
@@ -196,17 +184,7 @@
                   <img style="width:100%;height:100%" v-for="item in fileList" :src="item.url" alt="">
                 </div>
                 <!-- <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.code" style="width=250px"></el-input> -->
-                <el-upload v-else v-model="hospitalForm.documentId"
-                           :class="{'hide-upload-btn': photoHide}"
-                           disabled: none
-                           :action="uploadUrl"
-                           :limit="1" list-type="picture-card"
-                           :on-preview="handlePictureCardPreview"
-                           :on-exceed="handleExceed"
-                           :on-remove="handleRemove"
-                           :on-success="handleSuccess"
-                           :headers="myHeaders" name='multipartFile'
-                           :file-list="fileList">
+                <el-upload v-else v-model="hospitalForm.documentId" :class="{'hide-upload-btn': photoHide}" disabled: none :action="uploadUrl" :limit="1" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-exceed="handleExceed" :on-remove="handleRemove" :on-success="handleSuccess" :headers="myHeaders" name='multipartFile' :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
@@ -218,7 +196,7 @@
               <el-form-item label='地址' prop="areaCode">
                 <!-- <el-input type="text" placeholder="请输入编码" v-model="hospitalForm.area_code" style="width:250px"></el-input> -->
                 <div style="display:flex">
-                <el-cascader v-model="hospitalForm.areaCode" :options="options1" ref="currentAddr" @change="handleChange" style="width:250px"></el-cascader>
+                  <el-cascader v-model="hospitalForm.areaCode" :options="options1" ref="currentAddr" @change="handleChange" style="width:250px"></el-cascader>
                   <el-input v-model="hospitalForm.address" style="width: 500px;" />
                 </div>
               </el-form-item>
@@ -237,7 +215,6 @@
 <script>
 import ApiServer from '@/api/apiServer'
 import { getToken } from '@/utils/auth'
-import citys from '@/utils/data'
 import { regionData } from 'element-china-area-data'
 export default {
   data() {
@@ -278,7 +255,7 @@ export default {
         phone: '',
         address: '',
         documentId: '',
-        areaCode:[],
+        areaCode: [],
         areaStr: ''
       },
       roleList: [],
@@ -334,7 +311,6 @@ export default {
   },
   components: {},
   created() {
-    console.log(citys)
     this.getTableData()
   },
   methods: {
@@ -363,9 +339,9 @@ export default {
         url: url + row.documentUrl
       }
       list.push(d)
-      if(row.documentUrl){
+      if (row.documentUrl) {
         this.fileList = list
-      }else{
+      } else {
         this.photoHide = false
         this.fileList = []
       }
@@ -390,22 +366,18 @@ export default {
       })
     },
     enableHandle(row) {
-      this.$confirm(
-        row.status == '1' ? '确定要停用？' : '确认要启用？',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
+      this.$confirm(row.status == '1' ? '确定要停用？' : '确认要启用？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
         .then(() => {
           row.status = row.status == '1' ? '0' : '1'
-          ApiServer.manager.updateHospitalInfo(row).then((res) => {
+          ApiServer.manager.updateHospitalInfo(row).then(res => {
             if (res.code == 200) {
               this.$message({
                 type: 'success',
-                message: row.status == '1' ? '启用成功' : '停用成功',
+                message: row.status == '1' ? '启用成功' : '停用成功'
               })
             }
           })
@@ -413,7 +385,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消操作',
+            message: '已取消操作'
           })
         })
     },
@@ -451,7 +423,7 @@ export default {
       this.hospitalInfoDialog = false
     },
     submitHospitalInfo(form) {
-      if(this.hospitalForm.areaCode){
+      if (this.hospitalForm.areaCode) {
         this.hospitalForm.areaCode = this.hospitalForm.areaCode.join(',')
         this.hospitalForm.areaStr = this.currentAddr.replaceAll(',', ' ')
       }
@@ -514,10 +486,10 @@ export default {
         this.queryForm.startDate = ''
         this.queryForm.endDate = ''
       }
-      if(this.queryForm.areaCode){
+      if (this.queryForm.areaCode) {
         this.queryForm.areaCode = this.queryForm.areaCode.join(',')
-      }else{
-        this.queryForm.areaCode = null;
+      } else {
+        this.queryForm.areaCode = null
       }
       ApiServer.manager.getHospitalList(this.queryForm).then(res => {
         if (res.code == 200) {
@@ -529,8 +501,8 @@ export default {
       })
     },
     handleChange(value) {
-      const addr = this.$refs["currentAddr"].getCheckedNodes();
-      this.currentAddr = addr[0].pathLabels + '';
+      const addr = this.$refs['currentAddr'].getCheckedNodes()
+      this.currentAddr = addr[0].pathLabels + ''
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -543,14 +515,13 @@ export default {
     },
     handleSuccess(file, fileList) {
       this.hospitalForm.documentId = file.data.id
-      this.photoHide = true;
+      this.photoHide = true
     }
   },
-  mounted() { }
+  mounted() {}
 }
 </script>
 <style scoped>
-
 /deep/ .el-dialog {
   border-radius: 10px;
 }
@@ -575,7 +546,7 @@ export default {
 }
 
 .hide-upload-btn /deep/ .el-upload--picture-card {
-    display: none;
+  display: none;
 }
 span {
   white-space: nowrap;
