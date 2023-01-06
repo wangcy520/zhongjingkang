@@ -247,6 +247,8 @@ export default {
                 type: 'success',
                 message: row.status == '1' ? '已启用' : '已禁用',
               })
+            } else {
+              this.getTableData()
             }
           })
         })

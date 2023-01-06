@@ -52,7 +52,7 @@ export default new Router({
                 {
                     path: '/DoctorManager',
                     component: () => import( '../views/pages/manager/DoctorManager'),
-                    meta: { title: '训练师管理' }
+                    meta: { title: '视训师管理' }
                 },
                 {
                     path: '/HospitalManager',
