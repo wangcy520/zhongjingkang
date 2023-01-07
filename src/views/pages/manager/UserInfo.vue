@@ -361,15 +361,15 @@ export default {
           code: "0"
         },
         {
-          name: "全部次卡",
+          name: "次卡",
           code: "1"
         },
         {
-          name: "全部月卡",
+          name: "月卡",
           code: "2"
         },
         {
-          name: "全部疗程",
+          name: "疗程",
           code: "3"
         },
         {
