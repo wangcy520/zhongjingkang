@@ -33,7 +33,6 @@
                 row-key="id"
                 ref="multipleTable"
                 v-loading="loading"
-                default-expand-all
                 :tree-props="{children: 'childrenList', hasChildren: 'hasChildren'}">
         <el-table-column type="selection"
                          width="55">

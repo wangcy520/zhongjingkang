@@ -62,7 +62,7 @@
                          label="邮箱"
                          width="200">
         </el-table-column>
-        <el-table-column prop="roleIds"
+        <el-table-column prop="roleList[0].name"
                          label="角色"
                          width="200">
         </el-table-column>
@@ -237,21 +237,7 @@ export default {
           name: '设备故障',
           code: '1',
         },
-      ],
-      roleList: [
-        {
-          name: '全部',
-          id: null,
-        },
-        {
-          name: '启用',
-          id: '1',
-        },
-        {
-          name: '禁用',
-          id: '0',
-        },
-      ],
+      ]
     }
   },
   components: {},

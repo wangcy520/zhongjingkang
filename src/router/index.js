@@ -57,7 +57,7 @@ export default new Router({
                 {
                     path: '/HospitalManager',
                     component: () => import( '../views/pages/manager/HospitalManager'),
-                    meta: { title: '视光中心管理' }
+                    meta: { title: '机构管理' }
                 },
                 {
                     name: 'purchaseManager',
