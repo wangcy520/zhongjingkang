@@ -19,7 +19,9 @@
       </el-form>
     </el-card>
     <el-card style="">
-      <el-table :data="tableData" v-loading="loading" ref="multipleTable">
+      <el-table :data="tableData" v-loading="loading" ref="multipleTable" @sort-change="tableSortDay" @header-click="handleClick"
+      :header-cell-class-name="headerclass"
+      >
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column fixed prop="name" label="姓名">
@@ -28,11 +30,11 @@
         </el-table-column>
         <el-table-column prop="treatmentCount" label="疗程(次)">
         </el-table-column>
-        <el-table-column prop="daysCount" label="日" width="150">
+        <el-table-column prop="daysCount" label="日" width="150" sortable="custom">
         </el-table-column>
-        <el-table-column prop="weekCount" label="周" width="150">
+        <el-table-column prop="weekCount" label="周" width="150" sortable="custom">
         </el-table-column>
-        <el-table-column prop="mouthCount" label="月" width="80">
+        <el-table-column prop="mouthCount" label="月" width="80" sortable="custom">
         </el-table-column>
         <el-table-column prop="durationCount" label="时间周期" width="150">
         </el-table-column>
@@ -47,8 +49,8 @@
           <template slot-scope="scope">
             <el-button @click="enableHandle(scope.row)" :type="scope.row.status == 1 ? 'danger' : 'success'" plain
               size="small" :icon="scope.row.status == '1' ? 'el-icon-video-pause' : 'el-icon-video-play'">{{
-                  scope.row.status == 1 ?
-                    '禁用' : '启用'
+                scope.row.status == 1 ?
+                  '禁用' : '启用'
               }}</el-button>
             <el-button @click="editHandle(scope.row)" type="primary" plain size="small" icon="el-icon-edit">编辑
             </el-button>
@@ -167,7 +169,7 @@ export default {
       },
       durationCount: '',
       doctorForm: {
-        type:'',
+        type: '',
         name: '',
         code: '',
         phone: '',
@@ -202,6 +204,18 @@ export default {
     this.getHospitalList()
   },
   methods: {
+    tableSortDay(e) {
+      let orderColum = '';
+      if (e.prop == 'daysCount') {
+        orderColum = 'daysCount'
+      } else if (e.prop == 'weekCount') {
+        orderColum = 'weekCount'
+      } else if (e.prop == 'mouthCount') {
+        orderColum = 'mouthCount'
+      }
+      this.queryForm.orderColum = orderColum
+      this.getTableData()
+    },
     getHospitalList() {
       ApiServer.manager.getHospitalList(this.queryForm).then((res) => {
         if (res.code == 200) {
