@@ -71,7 +71,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.zjkOrder ? scope.row.zjkOrder.treatmentType == 0 : ''">-/-</span>
             <span v-else>{{ scope.row.zjkOrder ? scope.row.zjkOrder.treatmentDays : 0 }}/{{
-                scope.row.zjkOrder ? scope.row.zjkOrder.residueDays : 0
+                scope.row.zjkOrder ? scope.row.zjkOrder.treatmentDays - scope.row.zjkOrder.currentNum : 0
             }}</span>
           </template>
         </el-table-column>
@@ -83,7 +83,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.zjkOrder ? scope.row.zjkOrder.treatmentType == 1 : ''"> -/- </span>
             <span v-else>{{ scope.row.zjkOrder ? scope.row.zjkOrder.treatmentCount : 0 }}/{{
-                scope.row.zjkOrder ? scope.row.zjkOrder.residueCount : 0
+                scope.row.zjkOrder ? scope.row.zjkOrder.treatmentCount - scope.row.zjkOrder.currentNum : 0
             }}</span>
           </template>
         </el-table-column>
