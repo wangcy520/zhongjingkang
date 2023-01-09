@@ -378,7 +378,6 @@ export default {
       //   let pageMax = Math.ceil(this.tableTotals / val)
       console.log(this.queryForm.pageParams.pageNum, this.tableTotals);
       if (this.queryForm.pageParams.pageNum * val > this.tableTotals) return;
-      console.log(this.date);
       this.getTableData();
     },
     handleCurrentChange(val) {

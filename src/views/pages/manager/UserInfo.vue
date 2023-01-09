@@ -191,8 +191,9 @@
                   }">
                   <el-input style="width:90%" v-model="domain.phone"></el-input>
                   <i class="el-icon-circle-plus-outline"  @click.prevent="addRelationList(domain)"
-                     v-if= "userInfoForm.relationList.length >= 3 ? false : index === 0"></i>
-                  <i class=" el-icon-remove-outline"  @click.prevent="delRelationList(domain)" v-else></i>
+                     v-if="userInfoForm.relationList.length >= 3 ? false : index === 0"></i>
+                  <i class=" el-icon-remove-outline"  @click.prevent="delRelationList(domain)" v-show="userInfoForm.relationList.length >= 3 && index!=0"></i>
+                  <i class=" el-icon-remove-outline"  @click.prevent="delRelationList(domain)" v-show="userInfoForm.relationList.length < 3 && index!=0"></i>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
