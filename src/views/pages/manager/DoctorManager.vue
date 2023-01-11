@@ -53,21 +53,18 @@
         <el-table-column
           prop="daysCount"
           label="日"
-          width="150"
           sortable="custom"
         >
         </el-table-column>
         <el-table-column
           prop="weekCount"
           label="周"
-          width="150"
           sortable="custom"
         >
         </el-table-column>
         <el-table-column
           prop="mouthCount"
           label="月"
-          width="80"
           sortable="custom"
         >
         </el-table-column>
@@ -294,6 +291,7 @@ export default {
           endTime: "",
         },
       },
+      columnIndex:2,
       durationCount: "",
       doctorForm: {
         type: "",
@@ -556,6 +554,7 @@ export default {
         this.queryForm.pageParams.startTime = this.date[0] + " 00:00:00";
         this.queryForm.pageParams.endTime = this.date[1] + " 23:59:59";
       }
+       this.queryForm.orderColum ? this.queryForm.orderColum =  this.queryForm.orderColum   :this.queryForm.orderColum = 'mouthCount'
       console.log(this.queryForm);
       ApiServer.manager.getDoctorList(this.queryForm).then((res) => {
         if (res.code == 200) {
@@ -589,7 +588,9 @@ export default {
 /deep/ .el-dialog__header {
   text-align: center;
 }
-
+/deep/ .caret-wrapper{
+  opacity: 0;
+}
 .userForm {
   display: flex;
   flex-wrap: wrap;
