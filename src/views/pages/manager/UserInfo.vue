@@ -614,6 +614,9 @@ export default {
     submitUserInfo(form) {
       this.userInfoForm.healthRecord = JSON.stringify(this.archivesInfo);
       this.buttonDisabled = true;
+      if (this.userInfoForm.birthday.split("-").length === 2) {
+        this.userInfoForm.birthday = this.userInfoForm.birthday + '-01';
+      }
       var requestAddr = this.isAdd == false ? "postModify" : "saveUser";
       ApiServer.manager[requestAddr](this.userInfoForm).then(res => {
         if (res.code == 200) {
